@@ -1,17 +1,17 @@
 ---
 import '../styles/global.css';
 import { events } from '../../data/events';
+import SiteHead from '../components/SiteHead.astro';
 
 ---
 
 <html lang="en" class="scroll-smooth">
 	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>DP Blast</title>
+		<SiteHead
+			title="GDG DP Blast"
+			description="Upload your photo, apply an event frame, preview the result, and download your profile-ready image in seconds."
+			imagePath="/logo.png"
+		/>
 	</head>
 	<body class="relative min-h-screen overflow-x-hidden bg-[#f8f9fa] font-['Outfit','Segoe_UI',sans-serif] text-[#202124] [--nav-h:4.5rem] max-sm:[--nav-h:4rem]">
 		<div class="pointer-events-none fixed inset-0 z-0" aria-hidden="true">
@@ -40,8 +40,8 @@ import { events } from '../../data/events';
 					aria-label="GDG Frames home"
 				>
 					<img
-						src="/gdg-logo.svg"
-						alt="GDG Frames"
+						src="/logo.png"
+						alt="DP Blast"
 						class="h-10 w-auto max-sm:h-8"
 						loading="eager"
 						decoding="async"

@@ -1,0 +1,44 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+  imagePath?: string;
+  siteName?: string;
+}
+
+const {
+  title,
+  description = 'Upload your photo, apply a frame, and download a profile-ready image in seconds.',
+  imagePath = '/logo.png',
+  siteName = 'GDG DP Blast',
+} = Astro.props;
+
+const pageUrl = Astro.url.toString();
+const imageUrl = new URL(imagePath, Astro.url).toString();
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="generator" content={Astro.generator} />
+<meta name="description" content={description} />
+<meta name="theme-color" content="#4285f4" />
+
+<link rel="canonical" href={pageUrl} />
+
+<link rel="icon" type="image/png" href="/logo.png" />
+<link rel="shortcut icon" href="/logo.png" />
+<link rel="apple-touch-icon" href="/logo.png" />
+
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content={siteName} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={pageUrl} />
+<meta property="og:image" content={imageUrl} />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={imageUrl} />
+
+<title>{title}</title>
