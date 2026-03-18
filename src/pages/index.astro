@@ -47,12 +47,21 @@ import SiteHead from '../components/SiteHead.astro';
 						decoding="async"
 					/>
 				</a>
-				<a
-					class="inline-flex items-center justify-center rounded-full bg-[#4285f4] px-5 py-2.5 text-sm font-bold text-white no-underline shadow-[0_10px_24px_rgba(66,133,244,0.28)] transition-transform duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:scale-[1.03] hover:-translate-y-0.5 hover:shadow-[0_14px_28px_rgba(66,133,244,0.33)] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-[#4285f459] max-sm:px-3.5 max-sm:py-2 max-sm:text-[0.9rem]"
-					href="#events-section"
-				>
-					Browse Events
-				</a>
+				<div class="flex items-center gap-2.5">
+					<button
+						type="button"
+						data-edit-name-trigger
+						class="inline-flex items-center justify-center rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-bold text-gray-700 shadow-[0_8px_20px_rgba(17,24,39,0.07)] transition-transform duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:-translate-y-0.5 hover:bg-gray-50 max-sm:px-3.5 max-sm:py-2 max-sm:text-[0.9rem]"
+					>
+						Edit Name
+					</button>
+					<a
+						class="inline-flex items-center justify-center rounded-full bg-[#4285f4] px-5 py-2.5 text-sm font-bold text-white no-underline shadow-[0_10px_24px_rgba(66,133,244,0.28)] transition-transform duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:scale-[1.03] hover:-translate-y-0.5 hover:shadow-[0_14px_28px_rgba(66,133,244,0.33)] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-[#4285f459] max-sm:px-3.5 max-sm:py-2 max-sm:text-[0.9rem]"
+						href="#events-section"
+					>
+						Browse Events
+					</a>
+				</div>
 			</div>
 		</header>
 

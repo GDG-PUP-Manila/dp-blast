@@ -35,13 +35,22 @@ const pageDescription = `Upload your photo and apply ${event.title} frames in DP
         <a class="inline-flex items-center no-underline" href="/" aria-label="GDG Frames home">
           <img src="/logo.png" alt="DP Blast" class="h-10 w-auto max-sm:h-8" loading="eager" decoding="async" />
         </a>
-        <a
-          class="inline-flex items-center justify-center rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-bold text-gray-700 no-underline shadow-[0_8px_20px_rgba(17,24,39,0.07)] transition-transform duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:-translate-y-0.5 hover:bg-gray-50"
-          href="/#events-section"
-        >
-          <span class="sm:hidden">Back</span>
-          <span class="hidden sm:inline">Back to events</span>
-        </a>
+        <div class="flex items-center gap-2.5">
+          <button
+            type="button"
+            data-edit-name-trigger
+            class="inline-flex items-center justify-center rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-bold text-gray-700 shadow-[0_8px_20px_rgba(17,24,39,0.07)] transition-transform duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:-translate-y-0.5 hover:bg-gray-50"
+          >
+            Edit Name
+          </button>
+          <a
+            class="inline-flex items-center justify-center rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-bold text-gray-700 no-underline shadow-[0_8px_20px_rgba(17,24,39,0.07)] transition-transform duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:-translate-y-0.5 hover:bg-gray-50"
+            href="/#events-section"
+          >
+            <span class="sm:hidden">Back</span>
+            <span class="hidden sm:inline">Back to events</span>
+          </a>
+        </div>
       </div>
     </header>
 

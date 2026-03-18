@@ -4,6 +4,7 @@ import { getEventBySlug } from '../../../../data/events';
 import PreviewPane from '../../../components/customize/PreviewPane.astro';
 import EditorPanel from '../../../components/customize/EditorPanel.astro';
 import SiteHead from '../../../components/SiteHead.astro';
+import CaptionPopup from '../../../components/magicui/CaptionPopup.astro';
 
 const eventSlug = Astro.params.eventSlug ?? '';
 const event = getEventBySlug(eventSlug);
@@ -40,12 +41,21 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
         <a class="inline-flex items-center no-underline" href="/" aria-label="GDG Frames home">
           <img src="/logo.png" alt="DP Blast" class="h-10 w-auto max-sm:h-8" loading="eager" decoding="async" />
         </a>
-        <a
-          class="inline-flex items-center justify-center rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-bold text-gray-700 no-underline shadow-[0_8px_20px_rgba(17,24,39,0.07)] transition-transform duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:-translate-y-0.5 hover:bg-gray-50"
-          href={`/events/${event.slug}`}
-        >
-          Back to uploader
-        </a>
+        <div class="flex items-center gap-2.5">
+          <button
+            type="button"
+            data-edit-name-trigger
+            class="inline-flex items-center justify-center rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-bold text-gray-700 shadow-[0_8px_20px_rgba(17,24,39,0.07)] transition-transform duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:-translate-y-0.5 hover:bg-gray-50"
+          >
+            Edit Name
+          </button>
+          <a
+            class="inline-flex items-center justify-center rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-bold text-gray-700 no-underline shadow-[0_8px_20px_rgba(17,24,39,0.07)] transition-transform duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:-translate-y-0.5 hover:bg-gray-50"
+            href={`/events/${event.slug}`}
+          >
+            Back to uploader
+          </a>
+        </div>
       </div>
     </header>
 
@@ -53,9 +63,21 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
       <section class="mx-auto w-full max-w-7xl px-4" aria-label="Customize your DP frame">
         <div class="rounded-4xl border border-gray-200 bg-white p-4 shadow-[0_20px_60px_rgba(17,24,39,0.14)] md:p-7 lg:p-9">
           <div class="grid gap-8 lg:grid-cols-[minmax(320px,480px)_1fr] lg:gap-12">
-            <PreviewPane frames={event.frames} selectedFrameId={selectedFrame.id} />
-            <EditorPanel eventTitle={event.title} />
+            <div class="order-2 lg:order-1">
+              <PreviewPane frames={event.frames} selectedFrameId={selectedFrame.id} />
+            </div>
+            <div class="order-1 lg:order-2">
+              <EditorPanel eventTitle={event.title} />
+            </div>
           </div>
+
+          <button
+            id="download-result"
+            type="button"
+            class="mt-8 inline-flex w-full items-center justify-center rounded-full bg-[#4285f4] px-5 py-3 text-sm font-bold text-white shadow-[0_12px_24px_rgba(66,133,244,0.3)] transition-transform duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:-translate-y-0.5 hover:bg-[#3d7ae0]"
+          >
+            Download Customized DP
+          </button>
         </div>
       </section>
     </main>
@@ -69,12 +91,15 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
       aria-hidden="true"
     ></div>
 
+    <CaptionPopup />
+
     <script is:inline>
       // @ts-nocheck
       const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
       const ALLOWED_TYPES = new Set(['image/png', 'image/jpeg', 'image/webp']);
       const SESSION_IMAGE_KEY = 'dpblast-customize-image';
       const HOLD_TIP_SEEN_KEY = 'dpblast-hold-controls-tip-seen';
+      const USER_NAME_KEY = 'dpblast-user-name';
 
       const initCustomizePage = ({ eventSlug, captionTemplate, initialFrameId }) => {
         let selectedFrameId = initialFrameId;
@@ -105,6 +130,13 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
         const resetQuickButton = document.getElementById('reset-quick');
         const holdControlsTip = document.getElementById('hold-controls-tip');
         const holdControlsTipDismiss = document.getElementById('hold-controls-tip-dismiss');
+        const captionPopup = document.getElementById('caption-popup');
+        const captionPopupBackdrop = document.getElementById('caption-popup-backdrop');
+        const captionPopupText = document.getElementById('caption-popup-text');
+        const captionPopupStatus = document.getElementById('caption-popup-status');
+        const captionPopupCopyButton = document.getElementById('caption-popup-copy');
+        const captionPopupCloseButton = document.getElementById('caption-popup-close');
+        const captionPopupCloseIconButton = document.getElementById('caption-popup-close-icon');
 
         const zoomRange = document.getElementById('zoom-range');
         const xRange = document.getElementById('x-range');
@@ -115,11 +147,6 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
         const xValue = document.getElementById('x-value');
         const yValue = document.getElementById('y-value');
         const tiltValue = document.getElementById('tilt-value');
-
-        const captionNameInput = document.getElementById('caption-name');
-        const captionOutput = document.getElementById('caption-output');
-        const captionCopyButton = document.getElementById('caption-copy');
-        const captionStatus = document.getElementById('caption-status');
 
         const ctx =
           canvas instanceof HTMLCanvasElement ? canvas.getContext('2d') : null;
@@ -143,24 +170,22 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
             tiltValue.textContent = `${Math.round(state.tiltDeg)}deg`;
         };
 
+        const getStoredVisitorName = () => {
+          try {
+            const storedName = localStorage.getItem(USER_NAME_KEY);
+            if (storedName && storedName.trim()) {
+              return storedName.trim();
+            }
+          } catch {
+            // Ignore storage errors and use fallback.
+          }
+
+          return 'Sparkmate';
+        };
+
         const buildCaption = (nameValue) => {
-          const safeName = nameValue && nameValue.trim() ? nameValue.trim() : 'Your Name';
+          const safeName = nameValue && nameValue.trim() ? nameValue.trim() : 'Sparkmate';
           return captionTemplate.replaceAll('{{name}}', safeName);
-        };
-
-        const updateCaptionOutput = () => {
-          if (!(captionOutput instanceof HTMLTextAreaElement)) return;
-          const nameValue =
-            captionNameInput instanceof HTMLInputElement ? captionNameInput.value : '';
-          captionOutput.value = buildCaption(nameValue);
-        };
-
-        const setCaptionStatus = (message, isError = false) => {
-          if (!(captionStatus instanceof HTMLParagraphElement)) return;
-          captionStatus.textContent = message;
-          captionStatus.className = isError
-            ? 'm-0 text-sm text-red-600'
-            : 'm-0 text-sm text-gray-600';
         };
 
         const getRangeBounds = (input, fallbackMin, fallbackMax) => {
@@ -497,6 +522,38 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
           window.setTimeout(hideTip, 5000);
         };
 
+        const setCaptionPopupStatus = (message, isError = false) => {
+          if (!(captionPopupStatus instanceof HTMLParagraphElement)) return;
+          captionPopupStatus.textContent = message;
+          captionPopupStatus.className = isError
+            ? 'm-0 mt-2 min-h-5 text-sm text-red-600'
+            : 'm-0 mt-2 min-h-5 text-sm text-gray-600';
+        };
+
+        const openCaptionPopup = (caption) => {
+          if (
+            !(captionPopup instanceof HTMLDivElement) ||
+            !(captionPopupText instanceof HTMLTextAreaElement)
+          ) {
+            return;
+          }
+
+          captionPopupText.value = caption;
+          captionPopup.classList.remove('hidden');
+          captionPopup.classList.add('flex');
+          setCaptionPopupStatus('Caption is ready.');
+        };
+
+        const closeCaptionPopup = (redirectHome = false) => {
+          if (!(captionPopup instanceof HTMLDivElement)) return;
+          captionPopup.classList.add('hidden');
+          captionPopup.classList.remove('flex');
+
+          if (redirectHome) {
+            window.location.href = '/';
+          }
+        };
+
         const trackDownload = () => {
           fetch('/api/analytics/download', {
             method: 'POST',
@@ -660,24 +717,21 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
               URL.revokeObjectURL(blobUrl);
               trackDownload();
               setCanvasStatus('Download started.');
+
+              const generatedCaption = buildCaption(getStoredVisitorName());
+              openCaptionPopup(generatedCaption);
             }, 'image/png');
           });
         }
 
-        if (captionNameInput instanceof HTMLInputElement) {
-          captionNameInput.addEventListener('input', () => {
-            updateCaptionOutput();
-            setCaptionStatus('Caption is ready.');
-          });
-        }
-
-        if (captionCopyButton instanceof HTMLButtonElement) {
-          captionCopyButton.addEventListener('click', async () => {
-            if (!(captionOutput instanceof HTMLTextAreaElement)) return;
-
-            const textToCopy = captionOutput.value.trim();
+        if (
+          captionPopupCopyButton instanceof HTMLButtonElement &&
+          captionPopupText instanceof HTMLTextAreaElement
+        ) {
+          captionPopupCopyButton.addEventListener('click', async () => {
+            const textToCopy = captionPopupText.value.trim();
             if (!textToCopy) {
-              setCaptionStatus('Caption is empty. Please enter your name first.', true);
+              setCaptionPopupStatus('Caption is empty.', true);
               return;
             }
 
@@ -685,19 +739,37 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
               if (navigator.clipboard?.writeText) {
                 await navigator.clipboard.writeText(textToCopy);
               } else {
-                captionOutput.focus();
-                captionOutput.select();
+                captionPopupText.focus();
+                captionPopupText.select();
                 const copied = document.execCommand('copy');
                 if (!copied) {
                   throw new Error('copy-failed');
                 }
               }
-              setCaptionStatus('Caption copied. You can paste it now.');
+              setCaptionPopupStatus('Caption copied. You can paste it now.');
             } catch {
-              setCaptionStatus('Copy failed. Please select and copy manually.', true);
+              setCaptionPopupStatus('Copy failed. Please select and copy manually.', true);
             }
           });
         }
+
+        if (captionPopupCloseButton instanceof HTMLButtonElement) {
+          captionPopupCloseButton.addEventListener('click', () => closeCaptionPopup(true));
+        }
+
+        if (captionPopupCloseIconButton instanceof HTMLButtonElement) {
+          captionPopupCloseIconButton.addEventListener('click', () => closeCaptionPopup(true));
+        }
+
+        if (captionPopupBackdrop instanceof HTMLDivElement) {
+          captionPopupBackdrop.addEventListener('click', () => closeCaptionPopup(true));
+        }
+
+        window.addEventListener('keydown', (event) => {
+          if (event.key === 'Escape') {
+            closeCaptionPopup(true);
+          }
+        });
 
         const bootstrap = async () => {
           const initialFrameButton = getFrameButtonById(selectedFrameId);
@@ -724,7 +796,6 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
         };
 
         updateValueLabels();
-        updateCaptionOutput();
         maybeShowHoldTip();
         bootstrap();
       };
