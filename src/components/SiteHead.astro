@@ -64,6 +64,7 @@ const imageUrl = new URL(imagePath, Astro.url).toString();
       } catch {
         // Ignore storage issues and keep the UX flowing.
       }
+      return normalizedName;
     };
 
     const closeModal = (modal) => {
@@ -79,7 +80,7 @@ const imageUrl = new URL(imagePath, Astro.url).toString();
       window.setTimeout(removeModal, 260);
     };
 
-    const mountNameModal = (forceOpen = false) => {
+    const mountNameModal = (forceOpen = false, onComplete) => {
       if (document.getElementById(MODAL_ID)) return;
 
       if (!forceOpen && hasStoredName()) {
@@ -139,14 +140,20 @@ const imageUrl = new URL(imagePath, Astro.url).toString();
         form.addEventListener('submit', (event) => {
           event.preventDefault();
           const value = input instanceof HTMLInputElement ? input.value : '';
-          persistName(value);
+          const savedName = persistName(value);
+          if (typeof onComplete === 'function') {
+            onComplete(savedName);
+          }
           closeModal(modal);
         });
       }
 
       if (skipButton instanceof HTMLButtonElement) {
         skipButton.addEventListener('click', () => {
-          persistName('Sparkmate');
+          const savedName = persistName('Sparkmate');
+          if (typeof onComplete === 'function') {
+            onComplete(savedName);
+          }
           closeModal(modal);
         });
       }
@@ -168,26 +175,80 @@ const imageUrl = new URL(imagePath, Astro.url).toString();
       mountNameModal(true);
     };
 
+    window.dpblastEnsureName = (onReady) => {
+      if (hasStoredName()) {
+        if (typeof onReady === 'function') {
+          let existingName = 'Sparkmate';
+          try {
+            existingName = localStorage.getItem(USER_NAME_KEY)?.trim() || 'Sparkmate';
+          } catch {
+            existingName = 'Sparkmate';
+          }
+          onReady(existingName);
+        }
+        return true;
+      }
+
+      mountNameModal(true, onReady);
+      return false;
+    };
+
     document.addEventListener('click', (event) => {
       const target = event.target;
       if (!(target instanceof Element)) return;
 
       const trigger = target.closest('[data-edit-name-trigger]');
-      if (!trigger) return;
+      if (trigger) {
+        event.preventDefault();
+        window.dpblastOpenNameModal();
+        return;
+      }
+
+      const gatedLink = target.closest('[data-requires-name]');
+      if (!gatedLink || !(gatedLink instanceof HTMLAnchorElement)) return;
 
       event.preventDefault();
-      window.dpblastOpenNameModal();
+      const destination = gatedLink.href;
+      window.dpblastEnsureName(() => {
+        window.location.href = destination;
+      });
     });
 
-    if (hasStoredName()) {
-      return;
-    }
+    const bindGridParallax = () => {
+      if (window.matchMedia('(pointer: coarse)').matches) {
+        return;
+      }
+
+      const sections = document.querySelectorAll('.brand-grid-bg');
+      sections.forEach((section) => {
+        if (!(section instanceof HTMLElement)) return;
+
+        const handleMove = (event) => {
+          const rect = section.getBoundingClientRect();
+          const x = (event.clientX - rect.left) / rect.width - 0.5;
+          const y = (event.clientY - rect.top) / rect.height - 0.5;
+
+          section.style.setProperty('--grid-parallax-x', `${(-x * 12).toFixed(2)}px`);
+          section.style.setProperty('--grid-parallax-y', `${(-y * 10).toFixed(2)}px`);
+        };
+
+        const resetParallax = () => {
+          section.style.setProperty('--grid-parallax-x', '0px');
+          section.style.setProperty('--grid-parallax-y', '0px');
+        };
+
+        section.addEventListener('mousemove', handleMove);
+        section.addEventListener('mouseleave', resetParallax);
+        window.addEventListener('blur', resetParallax);
+      });
+    };
 
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', () => mountNameModal(false), { once: true });
+      document.addEventListener('DOMContentLoaded', bindGridParallax, { once: true });
     } else {
-      mountNameModal(false);
+      bindGridParallax();
     }
+
   })();
 </script>
 

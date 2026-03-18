@@ -30,7 +30,7 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
     />
   </head>
   <body class="relative min-h-screen overflow-x-hidden bg-[#f8f9fa] font-['Outfit','Segoe_UI',sans-serif] text-[#202124] [--nav-h:4.5rem] max-sm:[--nav-h:4rem]">
-    <div class="pointer-events-none fixed inset-0 z-0" aria-hidden="true">
+    <div class="pointer-events-none fixed inset-0 -z-20" aria-hidden="true">
       <div class="absolute left-[12%] top-[18%] h-36 w-36 rounded-full bg-[#4285f4]/15 blur-3xl"></div>
       <div class="absolute right-[8%] top-[12%] h-28 w-28 rounded-full bg-[#fbbc04]/12 blur-2xl"></div>
       <div class="absolute bottom-[16%] right-[12%] h-40 w-40 rounded-full bg-[#34a853]/12 blur-3xl"></div>
@@ -59,7 +59,7 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
       </div>
     </header>
 
-    <main class="relative z-2 py-8 max-sm:pb-10">
+    <main class="relative z-10 py-8 max-sm:pb-10 brand-grid-bg brand-grid-bg--fade">
       <section class="mx-auto w-full max-w-7xl px-4" aria-label="Customize your DP frame">
         <div class="rounded-4xl border border-gray-200 bg-white p-4 shadow-[0_20px_60px_rgba(17,24,39,0.14)] md:p-7 lg:p-9">
           <div class="grid gap-8 lg:grid-cols-[minmax(320px,480px)_1fr] lg:gap-12">
@@ -136,7 +136,6 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
         const captionPopupStatus = document.getElementById('caption-popup-status');
         const captionPopupCopyButton = document.getElementById('caption-popup-copy');
         const captionPopupCloseButton = document.getElementById('caption-popup-close');
-        const captionPopupCloseIconButton = document.getElementById('caption-popup-close-icon');
 
         const zoomRange = document.getElementById('zoom-range');
         const xRange = document.getElementById('x-range');
@@ -157,6 +156,21 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
           statusEl.className = isError
             ? 'mt-3 text-sm text-red-600'
             : 'mt-3 text-sm text-gray-600';
+        };
+
+        const setDownloadLoading = (isLoading) => {
+          if (!(downloadButton instanceof HTMLButtonElement)) return;
+
+          if (isLoading) {
+            downloadButton.disabled = true;
+            downloadButton.textContent = 'Preparing download...';
+            downloadButton.classList.add('opacity-70', 'cursor-not-allowed');
+            return;
+          }
+
+          downloadButton.disabled = false;
+          downloadButton.textContent = 'Download Customized DP';
+          downloadButton.classList.remove('opacity-70', 'cursor-not-allowed');
         };
 
         const updateValueLabels = () => {
@@ -701,8 +715,11 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
               return;
             }
 
+            setDownloadLoading(true);
+
             canvas.toBlob((blob) => {
               if (!blob) {
+                setDownloadLoading(false);
                 setCanvasStatus('Download failed. Please try again.', true);
                 return;
               }
@@ -717,6 +734,7 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
               URL.revokeObjectURL(blobUrl);
               trackDownload();
               setCanvasStatus('Download started.');
+              setDownloadLoading(false);
 
               const generatedCaption = buildCaption(getStoredVisitorName());
               openCaptionPopup(generatedCaption);
@@ -755,10 +773,6 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
 
         if (captionPopupCloseButton instanceof HTMLButtonElement) {
           captionPopupCloseButton.addEventListener('click', () => closeCaptionPopup(true));
-        }
-
-        if (captionPopupCloseIconButton instanceof HTMLButtonElement) {
-          captionPopupCloseIconButton.addEventListener('click', () => closeCaptionPopup(true));
         }
 
         if (captionPopupBackdrop instanceof HTMLDivElement) {
