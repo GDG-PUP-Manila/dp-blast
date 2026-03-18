@@ -13,7 +13,7 @@ const json = (status: number, payload: Record<string, unknown>) =>
 export const POST: APIRoute = async ({ request }) => {
   try {
     const supabaseUrl = import.meta.env.SUPABASE_URL;
-    const supabaseServiceRoleKey = import.meta.env.SUPABASE_SERVICE_ROLE_KEY;
+    const supabaseServiceRoleKey = import.meta.env.SUPABASE_SECRET_KEY;
 
     // Analytics must never break the download UX.
     if (!supabaseUrl || !supabaseServiceRoleKey) {

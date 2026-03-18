@@ -11,7 +11,6 @@ export type EventItem = {
   title: string;
   description: string;
   creator: string;
-  supporters: number;
   captionTemplate: string;
   coverImagePath: string;
   frames: FrameItem[];
@@ -26,7 +25,6 @@ export const events: EventItem[] = [
     description:
       "Use this frame to celebrate the Cosmos DP Blast event! Customize your profile picture with the cosmic-themed overlay and share it on social media to show your support for the event.",
     creator: "GDG PUP",
-    supporters: 2499,
     captionTemplate:
       "Cosmos DP Blast\n\nI am {{name}} and I am joining the Cosmos DP Blast celebration.\n\n#CosmosDPBlast #DPBlast",
     coverImagePath: "/cosmos_dp_blast.png",
