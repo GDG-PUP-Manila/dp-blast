@@ -25,11 +25,19 @@ import SiteHead from '../components/SiteHead.astro';
 			<span class="scale-y-100 text-[clamp(12rem,44vw,46rem)] font-black text-slate-900">&gt;</span>
 		</div>
 
-		<div class="pointer-events-none fixed inset-0 -z-20" aria-hidden="true">
-			<span class="absolute left-[10%] top-[18%] block h-[clamp(54px,7vw,92px)] w-[clamp(54px,7vw,92px)] rotate-[7deg] rounded-[14px] bg-[#4285f4] shadow-[0_10px_22px_rgba(17,24,39,0.12)] motion-reduce:animate-none animate-bounce [animation-duration:6s]"></span>
-			<span class="absolute right-[18%] top-[22%] block h-[clamp(38px,5vw,62px)] w-[clamp(38px,5vw,62px)] rotate-45 rounded-[14px] bg-[#fbbc04] shadow-[0_10px_22px_rgba(17,24,39,0.12)] motion-reduce:animate-none animate-bounce [animation-duration:5.8s] [animation-delay:300ms]"></span>
-			<span class="absolute right-[12%] top-[61%] block h-[clamp(72px,9vw,118px)] w-[clamp(72px,9vw,118px)] rounded-full border-[9px] border-[#ef6f62] shadow-[0_10px_22px_rgba(17,24,39,0.12)] motion-reduce:animate-none animate-bounce [animation-duration:6.2s] [animation-delay:500ms] max-sm:right-[5%] max-sm:top-[64%]"></span>
-			<span class="absolute bottom-[20%] left-[15%] block h-[clamp(30px,4vw,42px)] w-[clamp(92px,12vw,142px)] -rotate-18 rounded-full bg-[#5cbf78] shadow-[0_10px_22px_rgba(17,24,39,0.12)] motion-reduce:animate-none animate-bounce [animation-duration:5.6s] [animation-delay:180ms] max-sm:bottom-[17%] max-sm:left-[6%]"></span>
+		<div class="pointer-events-none absolute inset-x-0 top-(--nav-h) z-0 h-[calc(100svh-var(--nav-h))] overflow-hidden" aria-hidden="true">
+			<div class="pointer-events-auto absolute left-[10%] top-[18%] motion-reduce:animate-none animate-bounce [animation-duration:6s]">
+				<span class="block h-[clamp(54px,7vw,92px)] w-[clamp(54px,7vw,92px)] rotate-[7deg] rounded-[14px] bg-[#4285f4] shadow-[0_10px_22px_rgba(17,24,39,0.12)] cursor-pointer transition-transform duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:scale-110 motion-reduce:hover:scale-100 will-change-transform"></span>
+			</div>
+			<div class="pointer-events-auto absolute right-[18%] top-[22%] motion-reduce:animate-none animate-bounce [animation-duration:5.8s] [animation-delay:300ms]">
+				<span class="block h-[clamp(38px,5vw,62px)] w-[clamp(38px,5vw,62px)] rotate-45 rounded-[14px] bg-[#fbbc04] shadow-[0_10px_22px_rgba(17,24,39,0.12)] cursor-pointer transition-transform duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:scale-110 motion-reduce:hover:scale-100 will-change-transform"></span>
+			</div>
+			<div class="pointer-events-auto absolute right-[12%] top-[61%] max-sm:right-[5%] max-sm:top-[64%] motion-reduce:animate-none animate-bounce [animation-duration:6.2s] [animation-delay:500ms]">
+				<span class="block h-[clamp(72px,9vw,118px)] w-[clamp(72px,9vw,118px)] rounded-full border-[9px] border-[#ef6f62] shadow-[0_10px_22px_rgba(17,24,39,0.12)] cursor-pointer transition-transform duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:scale-110 motion-reduce:hover:scale-100 will-change-transform"></span>
+			</div>
+			<div class="pointer-events-auto absolute bottom-[20%] left-[15%] max-sm:bottom-[17%] max-sm:left-[6%] motion-reduce:animate-none animate-bounce [animation-duration:5.6s] [animation-delay:180ms]">
+				<span class="block h-[clamp(30px,4vw,42px)] w-[clamp(92px,12vw,142px)] -rotate-18 rounded-full bg-[#5cbf78] shadow-[0_10px_22px_rgba(17,24,39,0.12)] cursor-pointer transition-transform duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:scale-110 motion-reduce:hover:scale-100 will-change-transform"></span>
+			</div>
 		</div>
 
 		<header class="sticky top-0 z-20 h-(--nav-h) border-b border-gray-200/90 bg-white/85 px-[clamp(1rem,3vw,2.5rem)] backdrop-blur-md max-sm:px-3.5">
@@ -58,9 +66,9 @@ import SiteHead from '../components/SiteHead.astro';
 			</div>
 		</header>
 
-		<main id="top" class="relative z-10 brand-grid-bg brand-grid-bg--fade">
+		<main id="top" class="relative brand-grid-bg brand-grid-bg--fade z-40">
 			<section class="relative mx-auto grid w-full max-w-7xl min-h-[calc(100svh-var(--nav-h))] content-center justify-items-center gap-3 overflow-hidden px-4 text-center" aria-labelledby="hero-title">
-				<div class="relative z-10">
+				<div class="relative z-40">
 
 				<h1 id="hero-title" class="m-0 animate-[fade-in_650ms_cubic-bezier(0.2,0.8,0.2,1)_both] leading-[0.9] tracking-[-0.045em] text-[#202124]">
 					<span class="block text-[clamp(2.25rem,8.4vw,6.8rem)] font-black uppercase text-slate-900">FRAME.</span>
@@ -91,7 +99,7 @@ import SiteHead from '../components/SiteHead.astro';
 
 			<section aria-labelledby="process-title" class="relative py-14">
 
-				<div class="relative z-10 mx-auto w-full max-w-7xl px-4">
+				<div class="relative z-40 mx-auto w-full max-w-7xl px-4">
 					<div class="mb-7 flex items-end justify-between gap-4 max-sm:flex-col max-sm:items-start">
 						<div>
 							<p class="m-0 text-sm font-semibold uppercase tracking-[0.18em] text-[#4285f4]">How it works</p>

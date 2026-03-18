@@ -31,7 +31,7 @@ Status values: planned, in-progress, blocked, done
 | Phase | Name                                     | Status      | Exit Gate                                                      |
 | ----- | ---------------------------------------- | ----------- | -------------------------------------------------------------- |
 | 0     | Foundation Spec                          | done        | Product flow, formats, constraints, and non-goals are explicit |
-| 1     | Project Setup and Backend Enablement     | planned     | Server mode and health route proven                            |
+| 1     | Project Setup and Backend Enablement     | in-progress | Server mode and health route proven                            |
 | 2     | Frame Catalog and Asset Specification    | in-progress | Stable frame manifest and assets                               |
 | 3     | Upload and Validation Flow               | in-progress | Only valid inputs accepted                                     |
 | 4     | Image Processing Engine                  | in-progress | Reliable compositing quality                                   |

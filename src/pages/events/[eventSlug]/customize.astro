@@ -96,6 +96,7 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
     <script is:inline>
       // @ts-nocheck
       const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
+      const MAX_EXPORT_EDGE = 2048;
       const ALLOWED_TYPES = new Set(['image/png', 'image/jpeg', 'image/webp']);
       const SESSION_IMAGE_KEY = 'dpblast-customize-image';
       const HOLD_TIP_SEEN_KEY = 'dpblast-hold-controls-tip-seen';
@@ -223,6 +224,56 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
             image.onerror = () => reject(new Error('image-load-failed'));
             image.src = src;
           });
+
+        const canvasToBlob = (sourceCanvas, mimeType) =>
+          new Promise((resolve) => {
+            sourceCanvas.toBlob((blob) => resolve(blob), mimeType);
+          });
+
+        const createDownloadBlob = async (sourceCanvas) => {
+          const sourceWidth = sourceCanvas.width;
+          const sourceHeight = sourceCanvas.height;
+          const scaleFactor = Math.min(
+            1,
+            MAX_EXPORT_EDGE / Math.max(sourceWidth, sourceHeight),
+          );
+
+          let exportCanvas = sourceCanvas;
+
+          if (scaleFactor < 1) {
+            const scaledCanvas = document.createElement('canvas');
+            scaledCanvas.width = Math.max(1, Math.round(sourceWidth * scaleFactor));
+            scaledCanvas.height = Math.max(1, Math.round(sourceHeight * scaleFactor));
+
+            const scaledCtx = scaledCanvas.getContext('2d');
+            if (!scaledCtx) {
+              throw new Error('canvas-context-unavailable');
+            }
+
+            scaledCtx.imageSmoothingEnabled = true;
+            scaledCtx.imageSmoothingQuality = 'high';
+            scaledCtx.drawImage(
+              sourceCanvas,
+              0,
+              0,
+              sourceWidth,
+              sourceHeight,
+              0,
+              0,
+              scaledCanvas.width,
+              scaledCanvas.height,
+            );
+
+            exportCanvas = scaledCanvas;
+          }
+
+          const pngBlob = await canvasToBlob(exportCanvas, 'image/png');
+          if (pngBlob) {
+            return { blob: pngBlob, extension: 'png' };
+          }
+
+          throw new Error('blob-export-failed');
+        };
 
         const getFrameButtonById = (frameId) =>
           Array.from(frameButtons).find((button) => {
@@ -707,7 +758,7 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
         }
 
         if (downloadButton instanceof HTMLButtonElement) {
-          downloadButton.addEventListener('click', () => {
+          downloadButton.addEventListener('click', async () => {
             if (!(canvas instanceof HTMLCanvasElement)) return;
 
             if (!(activePhotoImage instanceof HTMLImageElement)) {
@@ -717,28 +768,26 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
 
             setDownloadLoading(true);
 
-            canvas.toBlob((blob) => {
-              if (!blob) {
-                setDownloadLoading(false);
-                setCanvasStatus('Download failed. Please try again.', true);
-                return;
-              }
-
+            try {
+              const { blob, extension } = await createDownloadBlob(canvas);
               const blobUrl = URL.createObjectURL(blob);
               const anchor = document.createElement('a');
               anchor.href = blobUrl;
-              anchor.download = `${eventSlug}-${selectedFrameId}-custom.png`;
+              anchor.download = `${eventSlug}-${selectedFrameId}-custom.${extension}`;
               document.body.appendChild(anchor);
               anchor.click();
               document.body.removeChild(anchor);
               URL.revokeObjectURL(blobUrl);
               trackDownload();
               setCanvasStatus('Download started.');
-              setDownloadLoading(false);
 
               const generatedCaption = buildCaption(getStoredVisitorName());
               openCaptionPopup(generatedCaption);
-            }, 'image/png');
+            } catch {
+              setCanvasStatus('Download failed. Please try again.', true);
+            } finally {
+              setDownloadLoading(false);
+            }
           });
         }
 
