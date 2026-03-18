@@ -3,6 +3,7 @@ import sharp from "sharp";
 import { getEventBySlug } from "../../../data/events";
 
 const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
+const MAX_OUTPUT_EDGE = 2048;
 const ALLOWED_MIME_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
 const json = (status: number, message: string) =>
   new Response(JSON.stringify({ ok: false, message }), {
@@ -64,18 +65,40 @@ export const POST: APIRoute = async ({ request }) => {
       return json(500, "Frame metadata is invalid.");
     }
 
-    const baseImage = await sharp(inputBuffer)
-      .rotate()
-      .resize(frameMetadata.width, frameMetadata.height, {
-        fit: "cover",
-        position: "centre",
+    const scaleFactor = Math.min(
+      1,
+      MAX_OUTPUT_EDGE / Math.max(frameMetadata.width, frameMetadata.height),
+    );
+    const targetWidth = Math.max(
+      1,
+      Math.round(frameMetadata.width * scaleFactor),
+    );
+    const targetHeight = Math.max(
+      1,
+      Math.round(frameMetadata.height * scaleFactor),
+    );
+
+    const resizedFrameBuffer = await sharp(frameBuffer)
+      .resize(targetWidth, targetHeight, {
+        fit: "fill",
       })
       .png()
       .toBuffer();
 
+    const baseImage = await sharp(inputBuffer)
+      .rotate()
+      .resize(targetWidth, targetHeight, {
+        fit: "cover",
+        position: "centre",
+      })
+      .removeAlpha()
+      .toColorspace("srgb")
+      .png({ compressionLevel: 9 })
+      .toBuffer();
+
     const output = await sharp(baseImage)
-      .composite([{ input: frameBuffer, blend: "over" }])
-      .png()
+      .composite([{ input: resizedFrameBuffer, blend: "over" }])
+      .png({ compressionLevel: 9 })
       .toBuffer();
 
     return new Response(new Uint8Array(output), {
