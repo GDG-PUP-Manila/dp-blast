@@ -49,7 +49,7 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
       </div>
     </header>
 
-    <main class="relative z-2 py-8 max-sm:pb-30">
+    <main class="relative z-2 py-8 max-sm:pb-10">
       <section class="mx-auto w-full max-w-7xl px-4" aria-label="Customize your DP frame">
         <div class="rounded-4xl border border-gray-200 bg-white p-4 shadow-[0_20px_60px_rgba(17,24,39,0.14)] md:p-7 lg:p-9">
           <div class="grid gap-8 lg:grid-cols-[minmax(320px,480px)_1fr] lg:gap-12">
@@ -74,6 +74,7 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
       const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
       const ALLOWED_TYPES = new Set(['image/png', 'image/jpeg', 'image/webp']);
       const SESSION_IMAGE_KEY = 'dpblast-customize-image';
+      const HOLD_TIP_SEEN_KEY = 'dpblast-hold-controls-tip-seen';
 
       const initCustomizePage = ({ eventSlug, captionTemplate, initialFrameId }) => {
         let selectedFrameId = initialFrameId;
@@ -95,9 +96,15 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
         const downloadButton = document.getElementById('download-result');
         const zoomOutQuickButton = document.getElementById('zoom-out-quick');
         const zoomInQuickButton = document.getElementById('zoom-in-quick');
+        const moveLeftQuickButton = document.getElementById('move-left-quick');
+        const moveUpQuickButton = document.getElementById('move-up-quick');
+        const moveRightQuickButton = document.getElementById('move-right-quick');
+        const moveDownQuickButton = document.getElementById('move-down-quick');
         const rotateLeftQuickButton = document.getElementById('rotate-left-quick');
         const rotateRightQuickButton = document.getElementById('rotate-right-quick');
         const resetQuickButton = document.getElementById('reset-quick');
+        const holdControlsTip = document.getElementById('hold-controls-tip');
+        const holdControlsTipDismiss = document.getElementById('hold-controls-tip-dismiss');
 
         const zoomRange = document.getElementById('zoom-range');
         const xRange = document.getElementById('x-range');
@@ -354,6 +361,142 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
           renderCanvas();
         };
 
+        const applyOffsetDelta = (axis, delta) => {
+          const targetRange = axis === 'x' ? xRange : yRange;
+          const { min, max } = getRangeBounds(targetRange, -500, 500);
+
+          if (axis === 'x') {
+            state.offsetX = Math.min(max, Math.max(min, state.offsetX + delta));
+            if (xRange instanceof HTMLInputElement) {
+              xRange.value = String(Math.round(state.offsetX));
+            }
+          } else {
+            state.offsetY = Math.min(max, Math.max(min, state.offsetY + delta));
+            if (yRange instanceof HTMLInputElement) {
+              yRange.value = String(Math.round(state.offsetY));
+            }
+          }
+
+          updateValueLabels();
+          renderCanvas();
+        };
+
+        const bindTapOrHold = (button, action, statusMessage) => {
+          let holdTimeoutId = null;
+          let holdIntervalId = null;
+          let consumedByHold = false;
+
+          const runAction = () => {
+            action();
+            setCanvasStatus(statusMessage);
+          };
+
+          const clearHoldTimers = () => {
+            if (holdTimeoutId !== null) {
+              window.clearTimeout(holdTimeoutId);
+              holdTimeoutId = null;
+            }
+            if (holdIntervalId !== null) {
+              window.clearInterval(holdIntervalId);
+              holdIntervalId = null;
+            }
+          };
+
+          const startHold = (event) => {
+            if (event instanceof MouseEvent && event.button !== 0) {
+              return;
+            }
+
+            event.preventDefault();
+            consumedByHold = false;
+            clearHoldTimers();
+
+            holdTimeoutId = window.setTimeout(() => {
+              consumedByHold = true;
+              runAction();
+              holdIntervalId = window.setInterval(runAction, 85);
+            }, 260);
+          };
+
+          const stopHold = () => {
+            clearHoldTimers();
+          };
+
+          button.addEventListener('mousedown', startHold);
+          button.addEventListener('touchstart', startHold, { passive: false });
+
+          button.addEventListener('mouseup', stopHold);
+          button.addEventListener('mouseleave', stopHold);
+          button.addEventListener('touchend', stopHold);
+          button.addEventListener('touchcancel', stopHold);
+
+          button.addEventListener('click', (event) => {
+            if (consumedByHold) {
+              consumedByHold = false;
+              event.preventDefault();
+              return;
+            }
+            runAction();
+          });
+        };
+
+        const maybeShowHoldTip = () => {
+          if (!(holdControlsTip instanceof HTMLElement)) return;
+          if (!window.matchMedia('(max-width: 639px)').matches) return;
+
+          const hideTip = () => {
+            holdControlsTip.classList.add('hidden');
+            holdControlsTip.classList.remove('flex');
+          };
+
+          const markSeen = () => {
+            try {
+              localStorage.setItem(HOLD_TIP_SEEN_KEY, '1');
+            } catch {
+              // Ignore storage failures and continue with UI.
+            }
+          };
+
+          try {
+            if (localStorage.getItem(HOLD_TIP_SEEN_KEY) === '1') {
+              hideTip();
+              return;
+            }
+          } catch {
+            // If storage is unavailable, still show tip for this visit.
+          }
+
+          holdControlsTip.classList.remove('hidden');
+          holdControlsTip.classList.add('flex');
+          markSeen();
+
+          const quickButtons = [
+            zoomOutQuickButton,
+            zoomInQuickButton,
+            moveLeftQuickButton,
+            moveUpQuickButton,
+            moveRightQuickButton,
+            moveDownQuickButton,
+            rotateLeftQuickButton,
+            rotateRightQuickButton,
+            resetQuickButton,
+          ];
+
+          quickButtons.forEach((button) => {
+            if (button instanceof HTMLButtonElement) {
+              button.addEventListener('click', hideTip, { once: true });
+            }
+          });
+
+          if (holdControlsTipDismiss instanceof HTMLButtonElement) {
+            holdControlsTipDismiss.addEventListener('click', () => {
+              hideTip();
+            });
+          }
+
+          window.setTimeout(hideTip, 5000);
+        };
+
         const trackDownload = () => {
           fetch('/api/analytics/download', {
             method: 'POST',
@@ -409,31 +552,51 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
         }
 
         if (zoomOutQuickButton instanceof HTMLButtonElement) {
-          zoomOutQuickButton.addEventListener('click', () => {
+          bindTapOrHold(zoomOutQuickButton, () => {
             applyZoomDelta(-0.1);
-            setCanvasStatus('Zoom updated.');
-          });
+          }, 'Zoom updated.');
         }
 
         if (zoomInQuickButton instanceof HTMLButtonElement) {
-          zoomInQuickButton.addEventListener('click', () => {
+          bindTapOrHold(zoomInQuickButton, () => {
             applyZoomDelta(0.1);
-            setCanvasStatus('Zoom updated.');
-          });
+          }, 'Zoom updated.');
+        }
+
+        if (moveLeftQuickButton instanceof HTMLButtonElement) {
+          bindTapOrHold(moveLeftQuickButton, () => {
+            applyOffsetDelta('x', -15);
+          }, 'Position updated.');
+        }
+
+        if (moveRightQuickButton instanceof HTMLButtonElement) {
+          bindTapOrHold(moveRightQuickButton, () => {
+            applyOffsetDelta('x', 15);
+          }, 'Position updated.');
+        }
+
+        if (moveUpQuickButton instanceof HTMLButtonElement) {
+          bindTapOrHold(moveUpQuickButton, () => {
+            applyOffsetDelta('y', -15);
+          }, 'Position updated.');
+        }
+
+        if (moveDownQuickButton instanceof HTMLButtonElement) {
+          bindTapOrHold(moveDownQuickButton, () => {
+            applyOffsetDelta('y', 15);
+          }, 'Position updated.');
         }
 
         if (rotateLeftQuickButton instanceof HTMLButtonElement) {
-          rotateLeftQuickButton.addEventListener('click', () => {
+          bindTapOrHold(rotateLeftQuickButton, () => {
             applyTiltDelta(-5);
-            setCanvasStatus('Tilt updated.');
-          });
+          }, 'Tilt updated.');
         }
 
         if (rotateRightQuickButton instanceof HTMLButtonElement) {
-          rotateRightQuickButton.addEventListener('click', () => {
+          bindTapOrHold(rotateRightQuickButton, () => {
             applyTiltDelta(5);
-            setCanvasStatus('Tilt updated.');
-          });
+          }, 'Tilt updated.');
         }
 
         if (resetQuickButton instanceof HTMLButtonElement) {
@@ -562,6 +725,7 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
 
         updateValueLabels();
         updateCaptionOutput();
+        maybeShowHoldTip();
         bootstrap();
       };
 

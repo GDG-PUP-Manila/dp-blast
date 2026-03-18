@@ -1,5 +1,5 @@
 ---
-type IconName = 'zoom-out' | 'zoom-in' | 'rotate-ccw' | 'rotate-cw' | 'undo-2';
+type IconName = 'zoom-out' | 'zoom-in' | 'rotate-ccw' | 'rotate-cw' | 'undo-2' | 'arrow-left' | 'arrow-right' | 'arrow-up' | 'arrow-down';
 
 type Props = {
   name: IconName;
@@ -44,5 +44,33 @@ const { name, class: className = 'h-5 w-5' } = Astro.props;
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class={className} aria-hidden="true">
     <path d="M9 14 4 9l5-5"></path>
     <path d="M4 9h7a8 8 0 0 1 8 8v3"></path>
+  </svg>
+)}
+
+{name === 'arrow-left' && (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class={className} aria-hidden="true">
+    <path d="m12 19-7-7 7-7"></path>
+    <path d="M19 12H5"></path>
+  </svg>
+)}
+
+{name === 'arrow-right' && (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class={className} aria-hidden="true">
+    <path d="m12 5 7 7-7 7"></path>
+    <path d="M5 12h14"></path>
+  </svg>
+)}
+
+{name === 'arrow-up' && (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class={className} aria-hidden="true">
+    <path d="m5 12 7-7 7 7"></path>
+    <path d="M12 19V5"></path>
+  </svg>
+)}
+
+{name === 'arrow-down' && (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class={className} aria-hidden="true">
+    <path d="m19 12-7 7-7-7"></path>
+    <path d="M12 5v14"></path>
   </svg>
 )}
