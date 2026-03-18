@@ -20,7 +20,7 @@ const pageDescription = `Upload your photo and apply ${event.title} frames in DP
     <SiteHead
       title={pageTitle}
       description={pageDescription}
-      imagePath={defaultFrame?.thumbnailPath ?? '/cosmos_dp_blast.png'}
+      imagePath={event.metaImagePath ?? `/api/og/${event.slug}`}
     />
   </head>
   <body class="relative min-h-screen overflow-x-hidden bg-[#f8f9fa] font-['Outfit','Segoe_UI',sans-serif] text-[#202124] [--nav-h:4.5rem] max-sm:[--nav-h:4rem]">

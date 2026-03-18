@@ -4,6 +4,7 @@ interface Props {
   description?: string;
   imagePath?: string;
   siteName?: string;
+  imageAlt?: string;
 }
 
 const {
@@ -11,10 +12,11 @@ const {
   description = 'Upload your photo, apply a frame, and download a profile-ready image in seconds.',
   imagePath = '/logo.png',
   siteName = 'GDG DP Blast',
+  imageAlt = title,
 } = Astro.props;
 
-const pageUrl = Astro.url.toString();
-const imageUrl = new URL(imagePath, Astro.url).toString();
+const pageUrl = new URL(Astro.url.pathname + Astro.url.search, Astro.site ?? Astro.url).toString();
+const imageUrl = new URL(imagePath, Astro.site ?? Astro.url).toString();
 ---
 
 <meta charset="utf-8" />
@@ -35,11 +37,14 @@ const imageUrl = new URL(imagePath, Astro.url).toString();
 <meta property="og:description" content={description} />
 <meta property="og:url" content={pageUrl} />
 <meta property="og:image" content={imageUrl} />
+<meta property="og:image:secure_url" content={imageUrl} />
+<meta property="og:image:alt" content={imageAlt} />
 
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={imageUrl} />
+<meta name="twitter:image:alt" content={imageAlt} />
 
 <title>{title}</title>
 
