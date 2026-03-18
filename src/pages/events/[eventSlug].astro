@@ -1,6 +1,7 @@
 ---
 import '../../styles/global.css';
 import { getEventBySlug } from '../../../data/events';
+import SiteHead from '../../components/SiteHead.astro';
 
 const eventSlug = Astro.params.eventSlug ?? '';
 const event = getEventBySlug(eventSlug);
@@ -11,16 +12,16 @@ if (!event) {
 
 const defaultFrame = event.frames[0];
 const pageTitle = `${event.title} | DP Blast`;
+const pageDescription = `Upload your photo and apply ${event.title} frames in DP Blast.`;
 ---
 
 <html lang="en" class="scroll-smooth">
   <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content={Astro.generator} />
-    <title>{pageTitle}</title>
+    <SiteHead
+      title={pageTitle}
+      description={pageDescription}
+      imagePath={defaultFrame?.thumbnailPath ?? '/cosmos_dp_blast.png'}
+    />
   </head>
   <body class="relative min-h-screen overflow-x-hidden bg-[#f8f9fa] font-['Outfit','Segoe_UI',sans-serif] text-[#202124] [--nav-h:4.5rem] max-sm:[--nav-h:4rem]">
     <div class="pointer-events-none fixed inset-0 z-0" aria-hidden="true">
@@ -32,7 +33,7 @@ const pageTitle = `${event.title} | DP Blast`;
     <header class="sticky top-0 z-20 h-(--nav-h) border-b border-gray-200/90 bg-white/85 px-[clamp(1rem,3vw,2.5rem)] backdrop-blur-md max-sm:px-3.5">
       <div class="mx-auto flex h-full w-full max-w-7xl items-center justify-between">
         <a class="inline-flex items-center no-underline" href="/" aria-label="GDG Frames home">
-          <img src="/gdg-logo.svg" alt="GDG Frames" class="h-10 w-auto max-sm:h-8" loading="eager" decoding="async" />
+          <img src="/logo.png" alt="DP Blast" class="h-10 w-auto max-sm:h-8" loading="eager" decoding="async" />
         </a>
         <a
           class="inline-flex items-center justify-center rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-bold text-gray-700 no-underline shadow-[0_8px_20px_rgba(17,24,39,0.07)] transition-transform duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:-translate-y-0.5 hover:bg-gray-50"
