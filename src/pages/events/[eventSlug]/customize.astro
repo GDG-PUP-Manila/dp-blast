@@ -70,14 +70,16 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
               <EditorPanel eventTitle={event.title} />
             </div>
           </div>
+          <div class="flex justify-center mx-auto w-full sm:max-w-[480px] md:max-w-none">
+            <button
+              id="download-result"
+              type="button"
+              class="mt-2 inline-flex items-center justify-center rounded-full bg-(--google-green) px-5 py-3 text-sm font-bold w-full text-white shadow-[0_12px_24px_rgba(66,133,244,0.3)] transition-transform duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:-translate-y-0.5"
+            >
+              Download Customized DP
+            </button>
+          </div>
 
-          <button
-            id="download-result"
-            type="button"
-            class="mt-8 inline-flex w-full items-center justify-center rounded-full bg-[#4285f4] px-5 py-3 text-sm font-bold text-white shadow-[0_12px_24px_rgba(66,133,244,0.3)] transition-transform duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:-translate-y-0.5 hover:bg-[#3d7ae0]"
-          >
-            Download Customized DP
-          </button>
         </div>
       </section>
     </main>
@@ -96,16 +98,19 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
     <script is:inline>
       // @ts-nocheck
       const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
+      const MAX_PREVIEW_EDGE = 1024;
       const MAX_EXPORT_EDGE = 2048;
       const ALLOWED_TYPES = new Set(['image/png', 'image/jpeg', 'image/webp']);
       const SESSION_IMAGE_KEY = 'dpblast-customize-image';
       const HOLD_TIP_SEEN_KEY = 'dpblast-hold-controls-tip-seen';
+      const PINCH_TIP_SEEN_KEY = 'dpblast-pinch-tip-seen';
       const USER_NAME_KEY = 'dpblast-user-name';
 
       const initCustomizePage = ({ eventSlug, captionTemplate, initialFrameId }) => {
         let selectedFrameId = initialFrameId;
         let activePhotoImage = null;
         let activeFrameImage = null;
+        let renderScheduled = false;
 
         const state = {
           zoom: 1,
@@ -131,6 +136,7 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
         const resetQuickButton = document.getElementById('reset-quick');
         const holdControlsTip = document.getElementById('hold-controls-tip');
         const holdControlsTipDismiss = document.getElementById('hold-controls-tip-dismiss');
+        const pinchGestureTip = document.getElementById('pinch-gesture-tip');
         const captionPopup = document.getElementById('caption-popup');
         const captionPopupBackdrop = document.getElementById('caption-popup-backdrop');
         const captionPopupText = document.getElementById('caption-popup-text');
@@ -217,6 +223,10 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
           };
         };
 
+        const clamp = (value, min, max) => {
+          return Math.min(max, Math.max(min, value));
+        };
+
         const loadImage = (src) =>
           new Promise((resolve, reject) => {
             const image = new Image();
@@ -225,47 +235,101 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
             image.src = src;
           });
 
+        const getTargetSize = (sourceWidth, sourceHeight, maxEdge) => {
+          const width = sourceWidth || 1080;
+          const height = sourceHeight || 1080;
+          const scaleFactor = Math.min(1, maxEdge / Math.max(width, height));
+          return {
+            width: Math.max(1, Math.round(width * scaleFactor)),
+            height: Math.max(1, Math.round(height * scaleFactor)),
+          };
+        };
+
+        const drawComposite = ({
+          targetCtx,
+          canvasWidth,
+          canvasHeight,
+          photoImage,
+          frameImage,
+          offsetScaleX,
+          offsetScaleY,
+        }) => {
+          targetCtx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+          if (photoImage instanceof HTMLImageElement) {
+            const baseScale = Math.max(
+              canvasWidth / photoImage.naturalWidth,
+              canvasHeight / photoImage.naturalHeight,
+            );
+            const finalScale = baseScale * state.zoom;
+            const drawWidth = photoImage.naturalWidth * finalScale;
+            const drawHeight = photoImage.naturalHeight * finalScale;
+
+            targetCtx.save();
+            targetCtx.translate(
+              canvasWidth / 2 + state.offsetX * offsetScaleX,
+              canvasHeight / 2 + state.offsetY * offsetScaleY,
+            );
+            targetCtx.rotate((state.tiltDeg * Math.PI) / 180);
+            targetCtx.drawImage(
+              photoImage,
+              -drawWidth / 2,
+              -drawHeight / 2,
+              drawWidth,
+              drawHeight,
+            );
+            targetCtx.restore();
+          } else {
+            targetCtx.fillStyle = '#e5e7eb';
+            targetCtx.fillRect(0, 0, canvasWidth, canvasHeight);
+            targetCtx.fillStyle = '#6b7280';
+            targetCtx.font = '600 24px Outfit, Segoe UI, sans-serif';
+            targetCtx.textAlign = 'center';
+            targetCtx.fillText('Upload a photo to begin', canvasWidth / 2, canvasHeight / 2);
+          }
+
+          targetCtx.drawImage(frameImage, 0, 0, canvasWidth, canvasHeight);
+        };
+
         const canvasToBlob = (sourceCanvas, mimeType) =>
           new Promise((resolve) => {
             sourceCanvas.toBlob((blob) => resolve(blob), mimeType);
           });
 
-        const createDownloadBlob = async (sourceCanvas) => {
-          const sourceWidth = sourceCanvas.width;
-          const sourceHeight = sourceCanvas.height;
-          const scaleFactor = Math.min(
-            1,
-            MAX_EXPORT_EDGE / Math.max(sourceWidth, sourceHeight),
+        const createDownloadBlob = async () => {
+          if (!(activeFrameImage instanceof HTMLImageElement)) {
+            throw new Error('frame-not-ready');
+          }
+
+          const targetSize = getTargetSize(
+            activeFrameImage.naturalWidth,
+            activeFrameImage.naturalHeight,
+            MAX_EXPORT_EDGE,
           );
 
-          let exportCanvas = sourceCanvas;
+          const exportCanvas = document.createElement('canvas');
+          exportCanvas.width = targetSize.width;
+          exportCanvas.height = targetSize.height;
 
-          if (scaleFactor < 1) {
-            const scaledCanvas = document.createElement('canvas');
-            scaledCanvas.width = Math.max(1, Math.round(sourceWidth * scaleFactor));
-            scaledCanvas.height = Math.max(1, Math.round(sourceHeight * scaleFactor));
-
-            const scaledCtx = scaledCanvas.getContext('2d');
-            if (!scaledCtx) {
-              throw new Error('canvas-context-unavailable');
-            }
-
-            scaledCtx.imageSmoothingEnabled = true;
-            scaledCtx.imageSmoothingQuality = 'high';
-            scaledCtx.drawImage(
-              sourceCanvas,
-              0,
-              0,
-              sourceWidth,
-              sourceHeight,
-              0,
-              0,
-              scaledCanvas.width,
-              scaledCanvas.height,
-            );
-
-            exportCanvas = scaledCanvas;
+          const exportCtx = exportCanvas.getContext('2d');
+          if (!exportCtx) {
+            throw new Error('canvas-context-unavailable');
           }
+
+          const previewWidth = canvas instanceof HTMLCanvasElement ? canvas.width : targetSize.width;
+          const previewHeight = canvas instanceof HTMLCanvasElement ? canvas.height : targetSize.height;
+          const offsetScaleX = previewWidth > 0 ? targetSize.width / previewWidth : 1;
+          const offsetScaleY = previewHeight > 0 ? targetSize.height / previewHeight : 1;
+
+          drawComposite({
+            targetCtx: exportCtx,
+            canvasWidth: targetSize.width,
+            canvasHeight: targetSize.height,
+            photoImage: activePhotoImage,
+            frameImage: activeFrameImage,
+            offsetScaleX,
+            offsetScaleY,
+          });
 
           const pngBlob = await canvasToBlob(exportCanvas, 'image/png');
           if (pngBlob) {
@@ -293,7 +357,7 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
           });
         };
 
-        const renderCanvas = () => {
+        const performRender = () => {
           if (
             !(canvas instanceof HTMLCanvasElement) ||
             !ctx ||
@@ -302,46 +366,37 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
             return;
           }
 
-          const width = activeFrameImage.naturalWidth || 1080;
-          const height = activeFrameImage.naturalHeight || 1080;
+          const previewSize = getTargetSize(
+            activeFrameImage.naturalWidth,
+            activeFrameImage.naturalHeight,
+            MAX_PREVIEW_EDGE,
+          );
+          const width = previewSize.width;
+          const height = previewSize.height;
 
           if (canvas.width !== width || canvas.height !== height) {
             canvas.width = width;
             canvas.height = height;
           }
 
-          ctx.clearRect(0, 0, width, height);
+          drawComposite({
+            targetCtx: ctx,
+            canvasWidth: width,
+            canvasHeight: height,
+            photoImage: activePhotoImage,
+            frameImage: activeFrameImage,
+            offsetScaleX: 1,
+            offsetScaleY: 1,
+          });
+        };
 
-          if (activePhotoImage instanceof HTMLImageElement) {
-            const baseScale = Math.max(
-              width / activePhotoImage.naturalWidth,
-              height / activePhotoImage.naturalHeight,
-            );
-            const finalScale = baseScale * state.zoom;
-            const drawWidth = activePhotoImage.naturalWidth * finalScale;
-            const drawHeight = activePhotoImage.naturalHeight * finalScale;
-
-            ctx.save();
-            ctx.translate(width / 2 + state.offsetX, height / 2 + state.offsetY);
-            ctx.rotate((state.tiltDeg * Math.PI) / 180);
-            ctx.drawImage(
-              activePhotoImage,
-              -drawWidth / 2,
-              -drawHeight / 2,
-              drawWidth,
-              drawHeight,
-            );
-            ctx.restore();
-          } else {
-            ctx.fillStyle = '#e5e7eb';
-            ctx.fillRect(0, 0, width, height);
-            ctx.fillStyle = '#6b7280';
-            ctx.font = '600 28px Outfit, Segoe UI, sans-serif';
-            ctx.textAlign = 'center';
-            ctx.fillText('Upload a photo to begin', width / 2, height / 2);
-          }
-
-          ctx.drawImage(activeFrameImage, 0, 0, width, height);
+        const renderCanvas = () => {
+          if (renderScheduled) return;
+          renderScheduled = true;
+          window.requestAnimationFrame(() => {
+            renderScheduled = false;
+            performRender();
+          });
         };
 
         const setFrameFromButton = async (button) => {
@@ -354,6 +409,28 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
           activeFrameImage = await loadImage(overlayPath);
           highlightFrame(frameId);
           renderCanvas();
+        };
+
+        const ensureFrameReady = async () => {
+          if (activeFrameImage instanceof HTMLImageElement) {
+            return true;
+          }
+
+          const selectedButton = getFrameButtonById(selectedFrameId);
+          const fallbackButton = frameButtons[0];
+          const buttonToLoad =
+            selectedButton instanceof HTMLButtonElement
+              ? selectedButton
+              : fallbackButton instanceof HTMLButtonElement
+                ? fallbackButton
+                : null;
+
+          if (!(buttonToLoad instanceof HTMLButtonElement)) {
+            return false;
+          }
+
+          await setFrameFromButton(buttonToLoad);
+          return activeFrameImage instanceof HTMLImageElement;
         };
 
         const toDataUrl = (file) =>
@@ -399,6 +476,21 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
         const applyPhotoFromDataUrl = async (dataUrl) => {
           activePhotoImage = await loadImage(dataUrl);
           renderCanvas();
+        };
+
+        const syncRangeInputs = () => {
+          if (zoomRange instanceof HTMLInputElement) {
+            zoomRange.value = state.zoom.toFixed(2);
+          }
+          if (xRange instanceof HTMLInputElement) {
+            xRange.value = String(Math.round(state.offsetX));
+          }
+          if (yRange instanceof HTMLInputElement) {
+            yRange.value = String(Math.round(state.offsetY));
+          }
+          if (tiltRange instanceof HTMLInputElement) {
+            tiltRange.value = String(Math.round(state.tiltDeg));
+          }
         };
 
         const bindRange = (input, apply) => {
@@ -587,6 +679,217 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
           window.setTimeout(hideTip, 5000);
         };
 
+        const setupMobileGestureHint = () => {
+          if (!(pinchGestureTip instanceof HTMLElement)) return;
+          if (!window.matchMedia('(max-width: 639px)').matches) return;
+
+          const hideTip = () => {
+            pinchGestureTip.classList.add('hidden');
+            pinchGestureTip.classList.remove('block');
+          };
+
+          try {
+            if (localStorage.getItem(PINCH_TIP_SEEN_KEY) === '1') {
+              hideTip();
+              return;
+            }
+          } catch {
+            // Continue and show once for this visit.
+          }
+
+          pinchGestureTip.classList.remove('hidden');
+          pinchGestureTip.classList.add('block');
+
+          window.setTimeout(() => {
+            hideTip();
+            try {
+              localStorage.setItem(PINCH_TIP_SEEN_KEY, '1');
+            } catch {
+              // Ignore storage failures.
+            }
+          }, 4200);
+
+          const dismissOnGestureStart = () => {
+            hideTip();
+            try {
+              localStorage.setItem(PINCH_TIP_SEEN_KEY, '1');
+            } catch {
+              // Ignore storage failures.
+            }
+          };
+
+          if (canvas instanceof HTMLCanvasElement) {
+            canvas.addEventListener('touchstart', dismissOnGestureStart, { once: true });
+          }
+        };
+
+        const setupTouchGestures = () => {
+          if (!(canvas instanceof HTMLCanvasElement)) return;
+
+          const activeTouches = new Map();
+          let panStartPoint = null;
+          let panStartOffsetX = 0;
+          let panStartOffsetY = 0;
+          let pinchStartDistance = 0;
+          let pinchStartZoom = 1;
+          let pinchStartMidpoint = { x: 0, y: 0 };
+          let pinchStartOffsetX = 0;
+          let pinchStartOffsetY = 0;
+
+          const toCanvasPoint = (touch) => {
+            const rect = canvas.getBoundingClientRect();
+            const safeWidth = rect.width || 1;
+            const safeHeight = rect.height || 1;
+            return {
+              x: ((touch.clientX - rect.left) / safeWidth) * canvas.width,
+              y: ((touch.clientY - rect.top) / safeHeight) * canvas.height,
+            };
+          };
+
+          const getFirstTwoTouches = () => {
+            const values = Array.from(activeTouches.values());
+            if (values.length < 2) return null;
+            return [values[0], values[1]];
+          };
+
+          const getDistance = (a, b) => Math.hypot(b.x - a.x, b.y - a.y);
+          const getMidpoint = (a, b) => ({
+            x: (a.x + b.x) / 2,
+            y: (a.y + b.y) / 2,
+          });
+
+          const beginPan = (point) => {
+            panStartPoint = point;
+            panStartOffsetX = state.offsetX;
+            panStartOffsetY = state.offsetY;
+          };
+
+          const beginPinch = () => {
+            const touches = getFirstTwoTouches();
+            if (!touches) return;
+
+            const [first, second] = touches;
+            pinchStartDistance = Math.max(1, getDistance(first, second));
+            pinchStartZoom = state.zoom;
+            pinchStartMidpoint = getMidpoint(first, second);
+            pinchStartOffsetX = state.offsetX;
+            pinchStartOffsetY = state.offsetY;
+          };
+
+          const applyPan = (point) => {
+            if (!panStartPoint) return;
+
+            const xBounds = getRangeBounds(xRange, -500, 500);
+            const yBounds = getRangeBounds(yRange, -500, 500);
+
+            const deltaX = point.x - panStartPoint.x;
+            const deltaY = point.y - panStartPoint.y;
+
+            state.offsetX = clamp(panStartOffsetX + deltaX, xBounds.min, xBounds.max);
+            state.offsetY = clamp(panStartOffsetY + deltaY, yBounds.min, yBounds.max);
+            syncRangeInputs();
+            updateValueLabels();
+            renderCanvas();
+          };
+
+          const applyPinch = () => {
+            const touches = getFirstTwoTouches();
+            if (!touches) return;
+
+            const [first, second] = touches;
+            const zoomBounds = getRangeBounds(zoomRange, 0.5, 2.8);
+            const xBounds = getRangeBounds(xRange, -500, 500);
+            const yBounds = getRangeBounds(yRange, -500, 500);
+
+            const distance = Math.max(1, getDistance(first, second));
+            const midpoint = getMidpoint(first, second);
+
+            const nextZoom = clamp(
+              pinchStartZoom * (distance / pinchStartDistance),
+              zoomBounds.min,
+              zoomBounds.max,
+            );
+
+            state.zoom = Number(nextZoom.toFixed(2));
+            state.offsetX = clamp(
+              pinchStartOffsetX + (midpoint.x - pinchStartMidpoint.x),
+              xBounds.min,
+              xBounds.max,
+            );
+            state.offsetY = clamp(
+              pinchStartOffsetY + (midpoint.y - pinchStartMidpoint.y),
+              yBounds.min,
+              yBounds.max,
+            );
+
+            syncRangeInputs();
+            updateValueLabels();
+            renderCanvas();
+          };
+
+          const onTouchStart = (event) => {
+            Array.from(event.changedTouches).forEach((touch) => {
+              activeTouches.set(touch.identifier, toCanvasPoint(touch));
+            });
+
+            if (activeTouches.size >= 2) {
+              event.preventDefault();
+              beginPinch();
+              panStartPoint = null;
+              return;
+            }
+
+            if (activeTouches.size === 1) {
+              const point = Array.from(activeTouches.values())[0];
+              beginPan(point);
+            }
+          };
+
+          const onTouchMove = (event) => {
+            Array.from(event.changedTouches).forEach((touch) => {
+              if (activeTouches.has(touch.identifier)) {
+                activeTouches.set(touch.identifier, toCanvasPoint(touch));
+              }
+            });
+
+            if (activeTouches.size >= 2) {
+              event.preventDefault();
+              applyPinch();
+              return;
+            }
+
+            if (activeTouches.size === 1) {
+              event.preventDefault();
+              const point = Array.from(activeTouches.values())[0];
+              applyPan(point);
+            }
+          };
+
+          const onTouchEnd = (event) => {
+            Array.from(event.changedTouches).forEach((touch) => {
+              activeTouches.delete(touch.identifier);
+            });
+
+            if (activeTouches.size >= 2) {
+              beginPinch();
+              return;
+            }
+
+            if (activeTouches.size === 1) {
+              const point = Array.from(activeTouches.values())[0];
+              beginPan(point);
+              return;
+            }
+
+            panStartPoint = null;
+          };
+
+          canvas.addEventListener('touchstart', onTouchStart, { passive: false });
+          canvas.addEventListener('touchmove', onTouchMove, { passive: false });
+          canvas.addEventListener('touchend', onTouchEnd, { passive: false });
+          canvas.addEventListener('touchcancel', onTouchEnd, { passive: false });
+        };
+
         const setCaptionPopupStatus = (message, isError = false) => {
           if (!(captionPopupStatus instanceof HTMLParagraphElement)) return;
           captionPopupStatus.textContent = message;
@@ -747,6 +1050,13 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
             }
 
             try {
+              setCanvasStatus('Preparing frame and photo...');
+              const frameReady = await ensureFrameReady();
+              if (!frameReady) {
+                setCanvasStatus('Frame is still loading. Please try again in a moment.', true);
+                return;
+              }
+
               const dataUrl = await toDataUrl(file);
               await applyPhotoFromDataUrl(dataUrl);
               persistImage(file.name, file.type, dataUrl);
@@ -769,7 +1079,12 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
             setDownloadLoading(true);
 
             try {
-              const { blob, extension } = await createDownloadBlob(canvas);
+              const frameReady = await ensureFrameReady();
+              if (!frameReady) {
+                throw new Error('frame-not-ready');
+              }
+
+              const { blob, extension } = await createDownloadBlob();
               const blobUrl = URL.createObjectURL(blob);
               const anchor = document.createElement('a');
               anchor.href = blobUrl;
@@ -860,6 +1175,8 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
 
         updateValueLabels();
         maybeShowHoldTip();
+        setupMobileGestureHint();
+        setupTouchGestures();
         bootstrap();
       };
 
@@ -878,5 +1195,53 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
         });
       }
     </script>
+
+    <style is:global>
+      @keyframes pinch-hint-left {
+        0% {
+          transform: translateX(0) scale(1);
+          opacity: 0.75;
+        }
+        50% {
+          transform: translateX(-10px) scale(1.08);
+          opacity: 1;
+        }
+        100% {
+          transform: translateX(0) scale(1);
+          opacity: 0.75;
+        }
+      }
+
+      @keyframes pinch-hint-right {
+        0% {
+          transform: translateX(0) scale(1);
+          opacity: 0.75;
+        }
+        50% {
+          transform: translateX(10px) scale(1.08);
+          opacity: 1;
+        }
+        100% {
+          transform: translateX(0) scale(1);
+          opacity: 0.75;
+        }
+      }
+
+      .pinch-hint-dot {
+        display: inline-block;
+        height: 10px;
+        width: 10px;
+        border-radius: 9999px;
+        background: #4285f4;
+      }
+
+      .pinch-hint-dot--left {
+        animation: pinch-hint-left 1.1s ease-in-out infinite;
+      }
+
+      .pinch-hint-dot--right {
+        animation: pinch-hint-right 1.1s ease-in-out infinite;
+      }
+    </style>
   </body>
 </html>

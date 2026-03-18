@@ -23,8 +23,8 @@ export const events: EventItem[] = [
     slug: "cosmos",
     title: "Cosmos DP Blast",
     description:
-      "Use this frame to celebrate the Cosmos DP Blast event! Customize your profile picture with the cosmic-themed overlay and share it on social media to show your support for the event.",
-    creator: "GDG PUP",
+      "Join us for COSMOS 2026, a groundbreaking event designed to immerse students at Polytechnic University of the Philippines in the world of cutting-edge technology and innovation. As part of our commitment to empowering the next generation of tech leaders, this summit will provide an unparalleled opportunity to connect with industry experts and explore the latest advancements in AI, cloud computing, and development tools. \n\nUse this frame to celebrate the Cosmos DP Blast event! Customize your profile picture with the cosmic-themed overlay and share it on social media to show your support for the event.",
+    creator: "Google Developer Groups on Campus PUP",
     captionTemplate: 
 `𝗦𝘁𝗲𝗽𝗽𝗶𝗻𝗴 𝗶𝗻𝘁𝗼 𝘁𝗵𝗲 𝗖𝗢𝗦𝗠𝗢𝗦! 🚀☁️
 
