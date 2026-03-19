@@ -62,11 +62,17 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
     <main class="relative z-10 py-8 max-sm:pb-10 brand-grid-bg brand-grid-bg--fade">
       <section class="mx-auto w-full max-w-7xl px-4" aria-label="Customize your DP frame">
         <div class="rounded-4xl border border-gray-200 bg-white p-4 shadow-[0_20px_60px_rgba(17,24,39,0.14)] md:p-7 lg:p-9">
+          <div class="mb-8">
+            <h1 class="m-0 text-3xl font-extrabold tracking-tight md:text-4xl">Customize Your Photo</h1>
+            <p class="mt-2 text-base text-gray-600">
+              {event.title} · Adjust your layout and download your customized DP.
+            </p>
+          </div>
           <div class="grid gap-8 lg:grid-cols-[minmax(320px,480px)_1fr] lg:gap-12">
-            <div class="order-2 lg:order-1">
+            <div class="order-1 lg:order-1">
               <PreviewPane frames={event.frames} selectedFrameId={selectedFrame.id} />
             </div>
-            <div class="order-1 lg:order-2">
+            <div class="order-2 lg:order-2">
               <EditorPanel eventTitle={event.title} />
             </div>
           </div>
@@ -681,45 +687,22 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
 
         const setupMobileGestureHint = () => {
           if (!(pinchGestureTip instanceof HTMLElement)) return;
-          if (!window.matchMedia('(max-width: 639px)').matches) return;
+          // Show on phones AND tablets (matches the lg:hidden on the tip element)
+          if (!window.matchMedia('(max-width: 1023px)').matches) return;
 
           const hideTip = () => {
             pinchGestureTip.classList.add('hidden');
             pinchGestureTip.classList.remove('block');
           };
 
-          try {
-            if (localStorage.getItem(PINCH_TIP_SEEN_KEY) === '1') {
-              hideTip();
-              return;
-            }
-          } catch {
-            // Continue and show once for this visit.
-          }
-
+          // Show every page load — auto-hides after 5s or on first touch
           pinchGestureTip.classList.remove('hidden');
           pinchGestureTip.classList.add('block');
 
-          window.setTimeout(() => {
-            hideTip();
-            try {
-              localStorage.setItem(PINCH_TIP_SEEN_KEY, '1');
-            } catch {
-              // Ignore storage failures.
-            }
-          }, 4200);
-
-          const dismissOnGestureStart = () => {
-            hideTip();
-            try {
-              localStorage.setItem(PINCH_TIP_SEEN_KEY, '1');
-            } catch {
-              // Ignore storage failures.
-            }
-          };
+          window.setTimeout(hideTip, 5000);
 
           if (canvas instanceof HTMLCanvasElement) {
-            canvas.addEventListener('touchstart', dismissOnGestureStart, { once: true });
+            canvas.addEventListener('touchstart', hideTip, { once: true });
           }
         };
 
@@ -735,6 +718,8 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
           let pinchStartMidpoint = { x: 0, y: 0 };
           let pinchStartOffsetX = 0;
           let pinchStartOffsetY = 0;
+          let pinchStartAngle = 0;
+          let pinchStartTiltDeg = 0;
 
           const toCanvasPoint = (touch) => {
             const rect = canvas.getBoundingClientRect();
@@ -757,6 +742,7 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
             x: (a.x + b.x) / 2,
             y: (a.y + b.y) / 2,
           });
+          const getAngle = (a, b) => Math.atan2(b.y - a.y, b.x - a.x) * (180 / Math.PI);
 
           const beginPan = (point) => {
             panStartPoint = point;
@@ -774,6 +760,8 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
             pinchStartMidpoint = getMidpoint(first, second);
             pinchStartOffsetX = state.offsetX;
             pinchStartOffsetY = state.offsetY;
+            pinchStartAngle = getAngle(first, second);
+            pinchStartTiltDeg = state.tiltDeg;
           };
 
           const applyPan = (point) => {
@@ -800,9 +788,11 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
             const zoomBounds = getRangeBounds(zoomRange, 0.5, 2.8);
             const xBounds = getRangeBounds(xRange, -500, 500);
             const yBounds = getRangeBounds(yRange, -500, 500);
+            const tiltBounds = getRangeBounds(tiltRange, -180, 180);
 
             const distance = Math.max(1, getDistance(first, second));
             const midpoint = getMidpoint(first, second);
+            const currentAngle = getAngle(first, second);
 
             const nextZoom = clamp(
               pinchStartZoom * (distance / pinchStartDistance),
@@ -810,6 +800,17 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
               zoomBounds.max,
             );
 
+            let angleDiff = currentAngle - pinchStartAngle;
+            if (angleDiff > 180) angleDiff -= 360;
+            if (angleDiff < -180) angleDiff += 360;
+            
+            const nextTilt = clamp(
+              pinchStartTiltDeg + angleDiff,
+              tiltBounds.min,
+              tiltBounds.max,
+            );
+
+            state.tiltDeg = Math.round(nextTilt);
             state.zoom = Number(nextZoom.toFixed(2));
             state.offsetX = clamp(
               pinchStartOffsetX + (midpoint.x - pinchStartMidpoint.x),

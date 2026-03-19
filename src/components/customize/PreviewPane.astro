@@ -16,14 +16,16 @@ const { frames, selectedFrameId } = Astro.props;
 
       <div
         id="pinch-gesture-tip"
-        class="pointer-events-none absolute inset-x-3 bottom-3 hidden rounded-xl border border-[#d2e3fc] bg-white/94 px-3 py-2 text-center text-xs font-semibold text-[#1a73e8] shadow-[0_10px_24px_rgba(26,115,232,0.22)] backdrop-blur-sm sm:hidden"
+        class="pointer-events-none absolute inset-x-3 bottom-3 hidden rounded-xl border border-[#d2e3fc] bg-white/94 px-3 py-2.5 text-center text-xs font-semibold text-[#1a73e8] shadow-[0_10px_24px_rgba(26,115,232,0.22)] backdrop-blur-sm lg:hidden"
         role="status"
         aria-live="polite"
       >
-        Pinch to zoom. Drag with one finger to move.
-        <div class="mt-2 flex items-center justify-center gap-4" aria-hidden="true">
+        <p class="m-0 leading-snug">Pinch to zoom &nbsp;·&nbsp; Twist to rotate &nbsp;·&nbsp; Drag to move</p>
+        <div class="mt-2 flex items-center justify-center gap-1" aria-hidden="true">
+          <span class="pinch-hint-finger pinch-hint-finger--left">👆</span>
           <span class="pinch-hint-dot pinch-hint-dot--left"></span>
           <span class="pinch-hint-dot pinch-hint-dot--right"></span>
+          <span class="pinch-hint-finger pinch-hint-finger--right">👆</span>
         </div>
       </div>
     </div>
