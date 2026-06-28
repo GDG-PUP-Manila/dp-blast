@@ -1038,15 +1038,20 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
             if (!file) return;
 
             if (!ALLOWED_TYPES.has(file.type)) {
+              photoInput.value = '';
               setCanvasStatus(
-                'Unsupported file type. Please use PNG, JPG, or WEBP.',
+                'Unsupported file type. Please upload a new PNG, JPG, or WEBP image.',
                 true,
               );
               return;
             }
 
             if (file.size > MAX_UPLOAD_BYTES) {
-              setCanvasStatus('File is too large. Maximum size is 10MB.', true);
+              photoInput.value = '';
+              setCanvasStatus(
+                'That image is too large (max 10MB). Please upload a new, smaller image.',
+                true,
+              );
               return;
             }
 
