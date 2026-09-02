@@ -16,4 +16,4 @@
 
 **Engagement type:** Internal chapter product (event tooling), not a commercial engagement.
 
-Core upload → customize → download loop is shipped. Prefer operate/harden over greenfield rebuild. See [centralized-context.md](centralized-context.md) for routes and phase honesty, and [../FLAGS.md](../FLAGS.md) for the improvement register.
+Core upload -> customize -> download loop is shipped. Prefer operate/harden over greenfield rebuild. See [centralized-context.md](centralized-context.md) for routes and phase honesty, and [../FLAGS.md](../FLAGS.md) for the improvement register.
