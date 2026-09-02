@@ -56,3 +56,13 @@ Agent conventions: [AGENTS.md](AGENTS.md)
 | Outgoing CTO | Carlos Jerico Dela Torre |
 
 Remaining work is hardening (rate limits, abuse controls) and formal QA, not greenfield feature build. Prefer reading shipped routes under `src/pages/` over stale phase checkboxes.
+
+## Contributors
+
+Built for [GDG PUP Manila](https://gdgpup.org) by:
+
+| Role | Contributor |
+| --- | --- |
+| Development | [Gerald Berongoy](https://www.linkedin.com/in/geraldberongoy/) |
+| Development | [Rhandie J. Sales Jr.](https://www.linkedin.com/in/rhandie-sales/) |
+| CTO | [Carlos Jerico Dela Torre](https://www.linkedin.com/in/delatorrecj/) (outgoing, historical) |
