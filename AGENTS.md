@@ -1,11 +1,14 @@
 # Agent notes (DP Blast)
 
-## Read first
+## Read order (every session)
 
-1. [docs/centralized-context.md](docs/centralized-context.md) — product state, routes, brand tokens, engineering rules
-2. [docs/specs/dp-blast-phased-spec.md](docs/specs/dp-blast-phased-spec.md) — phased history and remaining gates
+1. [docs/state.md](docs/state.md) - Operate position, live URL, ownership.
+2. [docs/index.md](docs/index.md) - inventory of docs that exist.
+3. [FLAGS.md](FLAGS.md) - open improvement register.
+4. [docs/centralized-context.md](docs/centralized-context.md) - product state, routes, brand tokens, engineering rules.
+5. [docs/specs/dp-blast-phased-spec.md](docs/specs/dp-blast-phased-spec.md) - phased history and remaining gates.
 
-Do not invent a separate FMD doc suite (no PRD/SDD/QAD templates). Update these existing docs when reality changes.
+Do not invent a separate FMD doc suite (no PRD/SDD/QAD templates). Update these existing docs when reality changes. Do not auto-load archive paths (none present).
 
 ## Stack pins
 
@@ -25,3 +28,5 @@ Do not invent a separate FMD doc suite (no PRD/SDD/QAD templates). Update these 
 ## Status posture
 
 Milestone is **Operate** (MVP live). Implement only when fixing bugs, hardening, or adding catalog events. Do not restart phase scaffolding from scratch.
+
+Owner: GDG PUP Technology (incoming CTO). Handover 2026-09-02.

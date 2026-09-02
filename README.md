@@ -34,11 +34,12 @@ Other scripts:
 
 ## Docs
 
-Start here: [docs/centralized-context.md](docs/centralized-context.md)
-
-Phased implementation history and remaining work: [docs/specs/dp-blast-phased-spec.md](docs/specs/dp-blast-phased-spec.md)
-
-Agent conventions: [AGENTS.md](AGENTS.md)
+- [docs/state.md](docs/state.md): Operate position (live URL, ownership).
+- [docs/index.md](docs/index.md): Inventory of docs that exist.
+- [FLAGS.md](FLAGS.md): Open improvement register (docs handover).
+- [docs/centralized-context.md](docs/centralized-context.md): Product context, routes, tokens.
+- [docs/specs/dp-blast-phased-spec.md](docs/specs/dp-blast-phased-spec.md): Phased history and remaining work.
+- [AGENTS.md](AGENTS.md): Agent conventions (read order: state → index → FLAGS → task docs).
 
 ## Photo / PII handling
 
@@ -53,16 +54,16 @@ Agent conventions: [AGENTS.md](AGENTS.md)
 | Milestone | **Operate** (MVP live; core upload → customize → download loop shipped) |
 | Owner | GDG PUP Technology (incoming CTO) |
 | Handover date | 2026-09-02 |
-| Outgoing CTO | Carlos Jerico Dela Torre |
+| Handover | 2026-09-02 |
 
 Remaining work is hardening (rate limits, abuse controls) and formal QA, not greenfield feature build. Prefer reading shipped routes under `src/pages/` over stale phase checkboxes.
 
 ## Contributors
 
-Built for [GDG PUP Manila](https://gdgpup.org) by:
+This project is made possible by the GDG PUP community:
 
-| Role | Contributor |
+| Role | Name |
 | --- | --- |
-| Development | [Gerald Berongoy](https://www.linkedin.com/in/geraldberongoy/) |
-| Development | [Rhandie J. Sales Jr.](https://www.linkedin.com/in/rhandie-sales/) |
-| CTO | [Carlos Jerico Dela Torre](https://www.linkedin.com/in/delatorrecj/) (outgoing, historical) |
+| 💻 **Development** | [Gerald Berongoy](https://www.linkedin.com/in/geraldberongoy) - Senior Backend Developer |
+| 💻 **Development** | [Rhandie Sales](https://www.linkedin.com/in/rhandie-sales/) - Senior Frontend Developer |
+| 🚀 **CTO** | [Carlos Jerico Dela Torre](https://www.linkedin.com/in/delatorrecj/) - Chief Technology Officer (2025-2026) |
