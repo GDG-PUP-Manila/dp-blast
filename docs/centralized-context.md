@@ -1,105 +1,107 @@
 # DP Blast Centralized Context
 
+## Project state
+
+| Field | Value |
+| --- | --- |
+| Milestone | **Operate** (MVP live at [https://frame.gdgpup.org](https://frame.gdgpup.org)) |
+| Owner | GDG PUP Technology (incoming CTO) |
+| Handover | 2026-09-02 |
+| Outgoing CTO | Carlos Jerico Dela Torre |
+| Posture | Core product loop shipped. Prefer operate/harden over greenfield rebuild. |
+
 ## Purpose
 
 This file is the single source of project context for planning and implementation.
-It mirrors the phased spec and adds practical tracking for execution.
+It mirrors the phased spec and tracks what is actually shipped in the repo.
 
 ## Product Snapshot
 
 - Product: DP Blast
 - Core user goal: Upload photo, select event frame, preview, download in under 30 seconds.
 - MVP shape: Anonymous, fast, reliable, mobile-usable.
-- Primary stack direction: Astro + React UI, Astro server routes, Node adapter, Sharp for compositing.
+- Primary stack (shipped): Astro 6 + React 19 UI, Tailwind 4, Astro server routes on **Vercel** (`@astrojs/vercel`), Sharp for OG (and optional `/api/process`), Supabase for download analytics only.
+- Primary compositing path: **client-side canvas** on the customize page (not the Sharp process route).
 
-### Navigation Model (MVP)
+### Navigation Model (shipped)
 
-- Landing (`/`) is event discovery: list only events with available frames.
-- Event uploader route is slug-based: `/events/[eventSlug]`.
-- Event context is route-driven; uploader operations are scoped to selected event.
+1. Landing (`/`) lists events that have frames (`data/events.ts`).
+2. Event uploader: `/events/[eventSlug]` (file picker, frame select, handoff to customize).
+3. Customize: `/events/[eventSlug]/customize?frameId=...` (zoom, pan, tilt, preview, download, caption copy).
+4. Supporting APIs: `/api/test` (health), `/api/og/[eventSlug]` (OG image), `/api/analytics/download` (optional), `/api/process` (Sharp compositing; present but unused by the main UI).
 
 ## Non-Goals (MVP)
 
 - User accounts or authentication
-- Social sharing features
+- Social sharing features (beyond caption copy helper)
 - Payments, subscriptions, or premium tiers
 
 ## Phase Tracker
 
-Status values: planned, in-progress, blocked, done
+Status values: planned, in-progress, blocked, done, partial
 
-| Phase | Name                                     | Status      | Exit Gate                                                      |
-| ----- | ---------------------------------------- | ----------- | -------------------------------------------------------------- |
-| 0     | Foundation Spec                          | done        | Product flow, formats, constraints, and non-goals are explicit |
-| 1     | Project Setup and Backend Enablement     | in-progress | Server mode and health route proven                            |
-| 2     | Frame Catalog and Asset Specification    | in-progress | Stable frame manifest and assets                               |
-| 3     | Upload and Validation Flow               | in-progress | Only valid inputs accepted                                     |
-| 4     | Image Processing Engine                  | in-progress | Reliable compositing quality                                   |
-| 5     | Preview, Download, and Result Experience | in-progress | Complete user loop                                             |
-| 6     | Hardening and Abuse Prevention           | planned     | Operational safeguards in place                                |
-| 7     | QA, Release, and Feedback Loop           | planned     | Launch readiness with monitoring                               |
+Honest statuses as of handover 2026-09-02 (verified against `src/` and `data/`):
+
+| Phase | Name | Status | Notes |
+| ----- | ---- | ------ | ----- |
+| 0 | Foundation Spec | done | Spec + context docs exist |
+| 1 | Project Setup and Backend Enablement | done | Server output, Vercel adapter, `/api/test`, Sharp installed |
+| 2 | Frame Catalog and Asset Specification | done | `data/events.ts` + public frame assets |
+| 3 | Upload and Validation Flow | done | Landing → slug uploader → client validation (PNG/JPG/WEBP, 10MB). File picker only (no drag/drop). |
+| 4 | Image Processing Engine | done | Client canvas composite is the live path; Sharp `/api/process` remains as an alternate server path |
+| 5 | Preview, Download, and Result Experience | done | Customize route, controls, download, caption popup, analytics fire-and-forget |
+| 6 | Hardening and Abuse Prevention | planned | Size limits exist; no rate limiting, formal timeouts, or abuse suite |
+| 7 | QA, Release, and Feedback Loop | partial | Live site + download analytics; no automated test suite or formal release checklist in repo |
 
 ## Feature-to-Phase Map
 
-### Phase 1
+### Phase 1 (shipped)
 
-- Astro Node adapter enabled
-- Output mode set to server or hybrid
-- Shared server utility structure for validation and processing helpers
-- Health-check API route
+- Astro server output + Vercel adapter
+- Health-check API route (`/api/test`)
+- Sharp available for server image work
 
-### Phase 2
+### Phase 2 (shipped)
 
-- Event and frame metadata schema and manifest
-- Event-to-frame mapping rules and integrity checks
-- Event slug generation and uniqueness rules
-- Organized frame and thumbnail assets
-- Validation rules for frame entry integrity
+- Event and frame metadata in `data/events.ts`
+- Slugs, overlays, thumbnails, caption templates
+- Catalog shared by pages and APIs
 
-### Phase 3
+### Phase 3 (shipped)
 
-- Landing event list UI for browsing available events
-- Slug route handoff from landing to event uploader page
-- Upload UI (picker and drag/drop) on event uploader page
-- Frame picker UI scoped by selected event slug
-- Client and server input validation
-- User-facing error and retry states
+- Landing event list
+- Slug route to event uploader
+- Upload UI (file picker) and frame picker scoped by event
+- Client validation for type and size
+- Server validation on `/api/process` if that route is used
 
-### Phase 4
+### Phase 4 (shipped, client-primary)
 
-- Orientation normalization
-- Resize or crop to target canvas
-- Frame compositing over user image
-- Output generation and failure handling
+- Canvas preview composite with cover-fit photo under transparent frame
+- Optional Sharp process route for server-side composite
+- Export via canvas PNG download
 
-### Phase 5
+### Phase 5 (shipped)
 
-- Processing/loading state UI
-- Result preview and download
-- Dedicated customization page route after upload handoff
-- Photo alignment controls (zoom, position, tilt)
-- Reset and retry actions
-- Mobile-safe download behavior
-- Event caption editor (name placeholder replacement)
-- Caption copy-to-clipboard flow with success and fallback states
+- Customize page after upload handoff (`sessionStorage` photo handoff)
+- Zoom, position, tilt (ranges + quick buttons + touch gestures)
+- Download + caption template with `{{name}}` and copy feedback
+- Download analytics POST (best-effort)
 
-### Phase 6
+### Phase 6 (not shipped)
 
-- Rate limiting and payload controls
-- Timeout and failure safeguards
-- Cleanup for temporary artifacts
-- Abuse-case validation
+- Rate limiting and stronger abuse controls
+- Broader timeout / failure safeguards beyond current try/catch
+- Formal abuse-case checklist
 
-### Phase 7
+### Phase 7 (partial)
 
-- Unit and integration test coverage for critical paths
-- Cross-device manual QA
-- Release checklist and known issues log
-- Feedback and triage loop
+- Download analytics table migration under `supabase/migrations/`
+- Still needed: automated tests, written release checklist, known-issues log
 
 ## GDG Brand Direction (Frontend)
 
-The visual direction should follow the Code Rush and GDG brand system: bright, clean, white-first, energetic, and highly readable.
+The visual direction follows the Code Rush and GDG brand system: bright, clean, white-first, energetic, and highly readable.
 
 ### Visual Pillars
 
@@ -109,6 +111,8 @@ The visual direction should follow the Code Rush and GDG brand system: bright, c
 - Components: rounded cards and controls with soft shadows and clear hierarchy
 
 ### Design Tokens (Required)
+
+Defined in `src/styles/global.css`:
 
 - `--background: #f8f9fa`
 - `--foreground: #202124`
@@ -121,7 +125,7 @@ Use these token names exactly to preserve portability across project areas.
 
 ### Typography
 
-- Primary style: geometric sans with modern, clean forms
+- Primary style: geometric sans (Outfit in UI) with modern, clean forms
 - Heading style: extra-bold or black weight, tight tracking, concise copy
 - Body style: neutral gray, high readability, medium line height
 - Avoid default system-only typography for core branded sections
@@ -155,23 +159,24 @@ Use these token names exactly to preserve portability across project areas.
 
 ## Engineering Rules
 
-- Build only in active phase scope; defer extras to later phases.
-- Validate changes against phase acceptance criteria before marking done.
-- Keep frontend and backend contracts explicit (event slug, frame ID, file constraints, error schema).
-- Keep share contracts explicit (event caption template and placeholder keys such as `name`).
-- Favor shared utilities for validation logic to prevent drift.
+- Prefer **shipped code** over phase checkbox text when they disagree; then update this file.
+- Catalog and caption contracts live in `data/events.ts` (slug, frame ID, `{{name}}` placeholders).
+- Keep photo handling anonymous: no accounts; avoid persisting user photos server-side unless product requirements change.
+- Validate client inputs (type, size) before customize; keep error copy user-facing.
+- Analytics must fail soft (never block download UX).
+- Favor shared catalog helpers (`getEventBySlug`) to prevent route/API drift.
+- Do not add an FMD template suite; update existing docs only.
 
 ## Definition of Done for Any Feature
 
-- Phase scope match confirmed
-- Acceptance criteria met and checked
+- Matches Operate/harden intent or an explicit remaining phase item
+- Acceptance criteria checked against real routes
 - Mobile usability checked for touched flows
 - Error states handled
 - Notes updated in this file if status changed
 
-## Immediate Execution Order
+## Immediate priorities (post-handover)
 
-1. Finish Phase 1 backend setup and health route.
-2. Build event and frame catalog schema with slug metadata for Phase 2.
-3. Implement landing event browsing and slug-routed upload flow for Phase 3.
-4. Continue in phase order through release readiness.
+1. Operate the live site; add events/frames via `data/events.ts` + assets when needed.
+2. Phase 6 hardening if traffic or abuse warrants it.
+3. Phase 7 formal QA/tests and release checklist as capacity allows.

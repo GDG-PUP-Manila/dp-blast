@@ -1,43 +1,69 @@
-# Astro Starter Kit: Minimal
+# DP Blast
+
+GDG PUP event photo frame tool. Visitors upload a photo, pick an event frame, preview the composite, then download a profile-ready image.
+
+**Live:** [https://frame.gdgpup.org](https://frame.gdgpup.org)
+
+## Stack
+
+From `package.json` / `astro.config.mjs`:
+
+- Astro `^6` (server output)
+- React `^19` via `@astrojs/react`
+- Tailwind CSS `^4` via `@tailwindcss/vite`
+- Vercel adapter (`@astrojs/vercel`)
+- Sharp (OG images and optional server compositing route)
+- Supabase JS (download analytics only)
+
+Node `>=22.12.0`.
+
+## Run locally
 
 ```sh
-npm create astro@latest -- --template minimal
+npm install
+npm run dev
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+Other scripts:
 
-## 🚀 Project Structure
+| Command | Action |
+| --- | --- |
+| `npm run build` | Production build |
+| `npm run preview` | Preview the build |
+| `npm run astro ...` | Astro CLI |
 
-Inside of your Astro project, you'll see the following folders and files:
+## Docs
 
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
+- [docs/state.md](docs/state.md): Operate position (live URL, ownership).
+- [docs/index.md](docs/index.md): Inventory of docs that exist.
+- [FLAGS.md](FLAGS.md): Open improvement register (docs handover).
+- [docs/centralized-context.md](docs/centralized-context.md): Product context, routes, tokens.
+- [docs/specs/dp-blast-phased-spec.md](docs/specs/dp-blast-phased-spec.md): Phased history and remaining work.
+- [AGENTS.md](AGENTS.md): Agent conventions (read order: state → index → FLAGS → task docs).
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## Photo / PII handling
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+- Anonymous use. No accounts or auth.
+- Photos stay in the browser (`sessionStorage` / canvas) for the customize and download flow.
+- Download analytics may record event slug, frame id, path, and user-agent in Supabase. Photos are not uploaded for analytics.
 
-Any static assets, like images, can be placed in the `public/` directory.
+## Project status (handover)
 
-## 🧞 Commands
+| Field | Value |
+| --- | --- |
+| Milestone | **Operate** (MVP live; core upload → customize → download loop shipped) |
+| Owner | GDG PUP Technology (incoming CTO) |
+| Handover date | 2026-09-02 |
+| Handover | 2026-09-02 |
 
-All commands are run from the root of the project, from a terminal:
+Remaining work is hardening (rate limits, abuse controls) and formal QA, not greenfield feature build. Prefer reading shipped routes under `src/pages/` over stale phase checkboxes.
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+## Contributors
 
-## 👀 Want to learn more?
+This project is made possible by the GDG PUP community:
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+| Role | Name |
+| --- | --- |
+| 💻 **Development** | [Gerald Berongoy](https://www.linkedin.com/in/geraldberongoy) - Senior Backend Developer |
+| 💻 **Development** | [Rhandie Sales](https://www.linkedin.com/in/rhandie-sales/) - Senior Frontend Developer |
+| 🚀 **CTO** | [Carlos Jerico Dela Torre](https://www.linkedin.com/in/delatorrecj/) - Chief Technology Officer (2025-2026) |
