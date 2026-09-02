@@ -30,3 +30,9 @@ Do not invent a separate FMD doc suite (no PRD/SDD/QAD templates). Update these 
 Milestone is **Operate** (MVP live). Implement only when fixing bugs, hardening, or adding catalog events. Do not restart phase scaffolding from scratch.
 
 Owner: GDG PUP Technology (incoming CTO). Handover 2026-09-02.
+
+## FMD
+
+**Built on FMD philosophy (v1.31.0)** - INDEX / STATE / FLAGS control plane for humans and AI; no FMD engine install.
+
+Read order stays: docs/state.md then docs/index.md then FLAGS.md then task docs.
