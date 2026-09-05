@@ -1,5 +1,10 @@
 # DP Blast
 
+[![Status: Operate](https://img.shields.io/badge/Status-Operate-green)](docs/state.md)
+[![Stack: Astro](https://img.shields.io/badge/Stack-Astro-black)](#stack)
+[![FMD philosophy: 1.31.0](https://img.shields.io/badge/FMD%20philosophy-1.31.0-blue)](AGENTS.md)
+
+
 GDG PUP event photo frame tool. Visitors upload a photo, pick an event frame, preview the composite, then download a profile-ready image.
 
 **Live:** [https://frame.gdgpup.org](https://frame.gdgpup.org)
@@ -7,6 +12,7 @@ GDG PUP event photo frame tool. Visitors upload a photo, pick an event frame, pr
 ## Table of Contents
 
 - [About](#about)
+- [Start here](#start-here)
 - [Stack](#stack)
 - [Quick start](#quick-start)
 - [Photo / PII handling](#photo--pii-handling)
@@ -19,6 +25,12 @@ GDG PUP event photo frame tool. Visitors upload a photo, pick an event frame, pr
 DP Blast is GDG PUP's event photo frame tool. Visitors upload a photo, pick an event frame, preview the composite, then download a profile-ready image. Built for event attendees who want a shareable framed photo without creating an account.
 
 **Live:** [https://frame.gdgpup.org](https://frame.gdgpup.org)
+
+## Start here
+
+- **Humans:** this README, then [docs/state.md](docs/state.md)
+- **Agents:** [AGENTS.md](AGENTS.md) (state → index → FLAGS)
+- **Contributors:** table below
 
 ## Stack
 
@@ -80,10 +92,11 @@ Remaining work is hardening (rate limits, abuse controls) and formal QA, not gre
 
 ## Contributors
 
-This project is made possible by the GDG PUP community:
+This project is made possible by the GDG PUP community.
 
-| Role | Name |
-| --- | --- |
-| 💻 **Development** | [Gerald Berongoy](https://www.linkedin.com/in/geraldberongoy) - Senior Backend Developer |
-| 💻 **Development** | [Rhandie Sales](https://www.linkedin.com/in/rhandie-sales/) - Senior Frontend Developer |
-| 🚀 **CTO** | [Carlos Jerico Dela Torre](https://www.linkedin.com/in/delatorrecj/) - Chief Technology Officer (2025-2026) |
+| Name | Role | GitHub |
+| --- | --- | --- |
+| [Carlos Jerico Dela Torre](https://www.linkedin.com/in/delatorrecj) | Chief Technology Officer (2025-2026) | [@delatorrecj](https://github.com/delatorrecj) |
+| [Gerald Berongoy](https://www.linkedin.com/in/geraldberongoy) | Senior Backend Developer / Web Development Learning Head | [@geraldsberongoy](https://github.com/geraldsberongoy) |
+| [Rhandie Sales](https://www.linkedin.com/in/rhandie-sales) | Senior Frontend Developer / Web Development Co Lead | [@r0undy](https://github.com/r0undy) |
+
