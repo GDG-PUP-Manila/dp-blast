@@ -4,6 +4,22 @@ GDG PUP event photo frame tool. Visitors upload a photo, pick an event frame, pr
 
 **Live:** [https://frame.gdgpup.org](https://frame.gdgpup.org)
 
+## Table of Contents
+
+- [About](#about)
+- [Stack](#stack)
+- [Quick start](#quick-start)
+- [Photo / PII handling](#photo--pii-handling)
+- [Project status (handover)](#project-status-handover)
+- [Documentation](#documentation)
+- [Contributors](#contributors)
+
+## About
+
+DP Blast is GDG PUP's event photo frame tool. Visitors upload a photo, pick an event frame, preview the composite, then download a profile-ready image. Built for event attendees who want a shareable framed photo without creating an account.
+
+**Live:** [https://frame.gdgpup.org](https://frame.gdgpup.org)
+
 ## Stack
 
 From `package.json` / `astro.config.mjs`:
@@ -17,7 +33,7 @@ From `package.json` / `astro.config.mjs`:
 
 Node `>=22.12.0`.
 
-## Run locally
+## Quick start
 
 ```sh
 npm install
@@ -32,14 +48,7 @@ Other scripts:
 | `npm run preview` | Preview the build |
 | `npm run astro ...` | Astro CLI |
 
-## Docs
-
-- [docs/state.md](docs/state.md): Operate position (live URL, ownership).
-- [docs/index.md](docs/index.md): Inventory of docs that exist.
-- [FLAGS.md](FLAGS.md): Open improvement register (docs handover).
-- [docs/centralized-context.md](docs/centralized-context.md): Product context, routes, tokens.
-- [docs/specs/dp-blast-phased-spec.md](docs/specs/dp-blast-phased-spec.md): Phased history and remaining work.
-- [AGENTS.md](AGENTS.md): Agent conventions (read order: state → index → FLAGS → task docs).
+Env and secrets: see [FLAGS.md](FLAGS.md) and [docs/state.md](docs/state.md).
 
 ## Photo / PII handling
 
@@ -57,6 +66,17 @@ Other scripts:
 | Handover | 2026-09-02 |
 
 Remaining work is hardening (rate limits, abuse controls) and formal QA, not greenfield feature build. Prefer reading shipped routes under `src/pages/` over stale phase checkboxes.
+
+## Documentation
+
+| Doc | Purpose |
+|-----|---------|
+| [State](docs/state.md) | Operate position (live URL, ownership) |
+| [Index](docs/index.md) | Inventory of docs that exist |
+| [FLAGS](FLAGS.md) | Open improvement register (docs handover) |
+| [AGENTS](AGENTS.md) | Agent conventions (read order: state → index → FLAGS → task docs) |
+| [centralized-context.md](docs/centralized-context.md) | Product context, routes, tokens |
+| [dp-blast-phased-spec.md](docs/specs/dp-blast-phased-spec.md) | Phased history and remaining work |
 
 ## Contributors
 
