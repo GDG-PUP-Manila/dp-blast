@@ -9,20 +9,19 @@ const { eventTitle } = Astro.props;
 <div>
   <input class="sr-only" id="photo" type="file" accept="image/png,image/jpeg,image/webp" />
 
-  <div class="mt-6 hidden rounded-2xl border border-gray-200 bg-gray-50 p-4 md:p-5 sm:block">
-    <h2 class="m-0 text-xl font-bold text-[#202124]">Photo Controls</h2>
+  <div class="mt-6 hidden rounded-2xl border border-[var(--border)] bg-[var(--surface-muted)] p-4 md:p-5 sm:block">
+    <h2 class="m-0 text-xl font-bold text-[var(--foreground)]">Photo Controls</h2>
 
     <div class="mt-4 flex flex-wrap gap-3">
-      <label
-        for="photo"
+      <button type="button" data-photo-trigger
         class="inline-flex cursor-pointer items-center justify-center rounded-full bg-[#4285f4] px-5 py-2.5 text-sm font-bold text-white shadow-[0_10px_22px_rgba(66,133,244,0.3)] transition-transform duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:-translate-y-0.5 hover:bg-[#3d7ae0]"
       >
         Change Photo
-      </label>
+      </button>
       <button
         id="reset-adjustments"
         type="button"
-        class="inline-flex items-center justify-center rounded-full border border-gray-300 bg-white px-5 py-2.5 text-sm font-bold text-gray-700 transition-transform duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:-translate-y-0.5 hover:bg-gray-100"
+        class="inline-flex items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface)] px-5 py-2.5 text-sm font-bold text-[var(--text-secondary)] transition-transform duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:-translate-y-0.5 hover:bg-[var(--surface-hover)]"
       >
         Reset Adjustments
       </button>
@@ -30,32 +29,32 @@ const { eventTitle } = Astro.props;
 
     <div id="advanced-controls-panel" class="mt-5 grid gap-4">
       <div>
-        <div class="mb-1 flex items-center justify-between text-sm text-gray-600">
-          <label for="zoom-range" class="font-semibold text-gray-700">Zoom</label>
+        <div class="mb-1 flex items-center justify-between text-sm text-[var(--text-secondary)]">
+          <label for="zoom-range" class="font-semibold text-[var(--text-secondary)]">Zoom</label>
           <span id="zoom-value">1.00x</span>
         </div>
         <input id="zoom-range" type="range" min="0.5" max="2.8" step="0.01" value="1" class="w-full accent-[#4285f4]" />
       </div>
 
       <div>
-        <div class="mb-1 flex items-center justify-between text-sm text-gray-600">
-          <label for="x-range" class="font-semibold text-gray-700">Horizontal</label>
+        <div class="mb-1 flex items-center justify-between text-sm text-[var(--text-secondary)]">
+          <label for="x-range" class="font-semibold text-[var(--text-secondary)]">Horizontal</label>
           <span id="x-value">0px</span>
         </div>
         <input id="x-range" type="range" min="-500" max="500" step="1" value="0" class="w-full accent-[#ea4335]" />
       </div>
 
       <div>
-        <div class="mb-1 flex items-center justify-between text-sm text-gray-600">
-          <label for="y-range" class="font-semibold text-gray-700">Vertical</label>
+        <div class="mb-1 flex items-center justify-between text-sm text-[var(--text-secondary)]">
+          <label for="y-range" class="font-semibold text-[var(--text-secondary)]">Vertical</label>
           <span id="y-value">0px</span>
         </div>
         <input id="y-range" type="range" min="-500" max="500" step="1" value="0" class="w-full accent-[#34a853]" />
       </div>
 
       <div>
-        <div class="mb-1 flex items-center justify-between text-sm text-gray-600">
-          <label for="tilt-range" class="font-semibold text-gray-700">Tilt</label>
+        <div class="mb-1 flex items-center justify-between text-sm text-[var(--text-secondary)]">
+          <label for="tilt-range" class="font-semibold text-[var(--text-secondary)]">Tilt</label>
           <span id="tilt-value">0deg</span>
         </div>
         <input id="tilt-range" type="range" min="-180" max="180" step="1" value="0" class="w-full accent-[#fbbc04]" />

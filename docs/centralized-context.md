@@ -83,7 +83,7 @@ Honest statuses as of handover 2026-09-02 (verified against `src/` and `data/`):
 
 ### Phase 5 (shipped)
 
-- Customize page after upload handoff (`sessionStorage` photo handoff)
+- Customize page after upload handoff (IndexedDB with `sessionStorage` fallback in the local 2026-10-17 update)
 - Zoom, position, tilt (ranges + quick buttons + touch gestures)
 - Download + caption template with `{{name}}` and copy feedback
 - Download analytics POST (best-effort)
@@ -97,7 +97,23 @@ Honest statuses as of handover 2026-09-02 (verified against `src/` and `data/`):
 ### Phase 7 (partial)
 
 - Download analytics table migration under `supabase/migrations/`
-- Still needed: automated tests, written release checklist, known-issues log
+- Chromium acceptance tests added locally on 2026-10-17. Still needed: written release checklist and broader cross-device QA. FLAGS remains the improvement register.
+
+### Local development update: 2026-10-17
+
+Status: implemented locally, not pushed or deployed. Extends phases 3-5 with phase 7 acceptance coverage.
+
+- Light/dark toggle on all pages, device-theme detection, and a saved browser preference. Shared neutral tokens adapt surfaces, text, controls, dialogs, and grid fades while preserving GDG accent tokens.
+- Mouse and pen dragging on the canvas update position sliders. Existing touch pan, pinch, and rotation remain.
+- Photo handoff uses IndexedDB with a per-tab identifier and sessionStorage fallback. Only the latest photo for that tab is used; restoration expires after 24 hours and expired IndexedDB records are pruned during later uploads. Photos stay on the device. If both stores fail, the uploader explains how to continue, and the editor can still load and download a photo for the current visit.
+- Canvas drawing defaults both offset scales to 1.
+- Escape only dismisses an open dialog. Both dialogs manage focus and make background content inert while open. Upload actions use native buttons; shared focus indicators cover keyboard controls.
+- Reduced motion disables nonessential animation and parallax while keeping the name dialog visible.
+- Captions and hints are valid UTF-8 in the source. Browser checks verify caption emoji; the terminal's earlier garbled display was a decoding issue.
+- Footer maintainer credit: Kian Angelo M. Florendo. Historical contributor acknowledgments remain in README.
+- `npm test` runs Chromium acceptance checks for theme detection and persistence, photo rendering and PNG download, mouse/pen/touch dragging, large-photo reload, storage fallbacks, upload validation, and keyboard/dialog behavior. Run `npx playwright install chromium` once if needed.
+
+Acceptance scope: local desktop and emulated mobile Chromium. Physical devices, Safari/Firefox, and production deployment are not verified by these checks. Phase 6 remains planned and phase 7 remains partial.
 
 ## GDG Brand Direction (Frontend)
 
@@ -120,6 +136,8 @@ Defined in `src/styles/global.css`:
 - `--google-red: #ea4335`
 - `--google-yellow: #fbbc04`
 - `--google-green: #34a853`
+
+Additional neutral tokens: `--surface`, `--surface-muted`, `--surface-hover`, `--surface-translucent`, `--text-secondary`, `--text-muted`, `--border`, and `--fade-rgb`. Dark mode overrides neutral tokens under `:root[data-theme="dark"]`; preference initialization runs before page rendering.
 
 Use these token names exactly to preserve portability across project areas.
 

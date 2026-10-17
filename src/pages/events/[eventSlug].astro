@@ -1,4 +1,5 @@
 ---
+import ThemeToggle from '../../components/ThemeToggle.astro';
 import '../../styles/global.css';
 import { getEventBySlug } from '../../../data/events';
 import SiteHead from '../../components/SiteHead.astro';
@@ -23,28 +24,29 @@ const pageDescription = `Upload your photo and apply ${event.title} frames in DP
       imagePath={event.metaImagePath ?? `/api/og/${event.slug}`}
     />
   </head>
-  <body class="relative min-h-screen overflow-x-hidden bg-[#f8f9fa] font-['Outfit','Segoe_UI',sans-serif] text-[#202124] [--nav-h:4.5rem] max-sm:[--nav-h:4rem]">
+  <body class="relative min-h-screen overflow-x-hidden bg-[var(--background)] font-['Outfit','Segoe_UI',sans-serif] text-[var(--foreground)] [--nav-h:4.5rem] max-sm:[--nav-h:4rem]">
     <div class="pointer-events-none fixed inset-0 -z-20" aria-hidden="true">
       <div class="absolute left-[12%] top-[18%] h-36 w-36 rounded-full bg-[#4285f4]/15 blur-3xl"></div>
       <div class="absolute right-[8%] top-[12%] h-28 w-28 rounded-full bg-[#fbbc04]/12 blur-2xl"></div>
       <div class="absolute bottom-[16%] right-[12%] h-40 w-40 rounded-full bg-[#34a853]/12 blur-3xl"></div>
     </div>
 
-    <header class="sticky top-0 z-20 h-(--nav-h) border-b border-gray-200/90 bg-white/85 px-[clamp(1rem,3vw,2.5rem)] backdrop-blur-md max-sm:px-3.5">
+    <header class="sticky top-0 z-20 h-(--nav-h) border-b border-[var(--border)] bg-[var(--surface-translucent)] px-[clamp(1rem,3vw,2.5rem)] backdrop-blur-md max-sm:px-3.5">
       <div class="mx-auto flex h-full w-full max-w-7xl items-center justify-between">
-        <a class="inline-flex items-center no-underline" href="/" aria-label="GDG Frames home">
+        <a class="inline-flex shrink-0 items-center no-underline" href="/" aria-label="GDG Frames home">
           <img src="/logo.png" alt="DP Blast" class="h-10 w-auto max-sm:h-8" loading="eager" decoding="async" />
         </a>
         <div class="flex items-center gap-2.5">
+          <ThemeToggle />
           <button
             type="button"
             data-edit-name-trigger
-            class="inline-flex items-center justify-center rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-bold text-gray-700 shadow-[0_8px_20px_rgba(17,24,39,0.07)] transition-transform duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:-translate-y-0.5 hover:bg-gray-50"
+            class="inline-flex items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface)] px-4 py-2 text-sm font-bold text-[var(--text-secondary)] shadow-[0_8px_20px_rgba(17,24,39,0.07)] transition-transform duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:-translate-y-0.5 hover:bg-[var(--surface-muted)]"
           >
             Edit Name
           </button>
           <a
-            class="inline-flex items-center justify-center rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-bold text-gray-700 no-underline shadow-[0_8px_20px_rgba(17,24,39,0.07)] transition-transform duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:-translate-y-0.5 hover:bg-gray-50"
+            class="inline-flex items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface)] px-4 py-2 text-sm font-bold text-[var(--text-secondary)] no-underline shadow-[0_8px_20px_rgba(17,24,39,0.07)] transition-transform duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:-translate-y-0.5 hover:bg-[var(--surface-muted)]"
             href="/#events-section"
           >
             <span class="sm:hidden">Back</span>
@@ -56,10 +58,10 @@ const pageDescription = `Upload your photo and apply ${event.title} frames in DP
 
     <main class="relative z-10 py-10 brand-grid-bg brand-grid-bg--fade">
       <section class="mx-auto w-full max-w-7xl px-4" aria-label="Event uploader section">
-        <div class="rounded-4xl border border-gray-200 bg-white p-4 shadow-[0_20px_60px_rgba(17,24,39,0.14)] md:p-7 lg:p-9">
+        <div class="rounded-4xl border border-[var(--border)] bg-[var(--surface)] p-4 shadow-[0_20px_60px_rgba(17,24,39,0.14)] md:p-7 lg:p-9">
           <div class="grid gap-8 lg:grid-cols-[minmax(320px,460px)_1fr] lg:gap-12">
             <div class="mx-auto w-full max-w-115">
-              <div class="rounded-[1.7rem] border border-gray-200 bg-[#f3f4f6] p-3 shadow-[0_20px_40px_rgba(0,0,0,0.12)]">
+              <div class="rounded-[1.7rem] border border-[var(--border)] bg-[var(--surface-muted)] p-3 shadow-[0_20px_40px_rgba(0,0,0,0.12)]">
                 <div class="relative aspect-square overflow-hidden rounded-2xl bg-[#111827]">
                   <img
                     id="frame-preview"
@@ -74,32 +76,31 @@ const pageDescription = `Upload your photo and apply ${event.title} frames in DP
 
               <form id="upload-form" class="mt-5" aria-label="Upload your photo form">
                 <input class="sr-only" id="photo" name="photo" type="file" accept="image/png,image/jpeg,image/webp" />
-                <label
-                  for="photo"
+                <button type="button" data-photo-trigger
                   class="inline-flex w-full cursor-pointer items-center justify-center rounded-full bg-[#4285f4] px-5 py-3 text-lg font-bold text-white shadow-[0_12px_24px_rgba(66,133,244,0.35)] transition-transform duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:-translate-y-0.5 hover:bg-[#3d7ae0] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-[#8ab4f8]"
                 >
                   Choose Your Photo
-                </label>
-                <p id="upload-status" class="mt-3 text-center text-sm text-gray-600">
+                </button>
+                <p id="upload-status" class="mt-3 text-center text-sm text-[var(--text-secondary)]">
                   PNG, JPG, or WEBP up to 10MB. Next step: customize zoom, tilt, and caption.
                 </p>
               </form>
             </div>
 
-            <div class="text-[#202124]">
+            <div class="text-[var(--foreground)]">
               <h1 class="m-0 text-3xl font-extrabold tracking-tight md:text-4xl">{event.title}</h1>
-              <p class="mt-2 text-base text-gray-600">By {event.creator} </p>
+              <p class="mt-2 text-base text-[var(--text-secondary)]">By {event.creator} </p>
 
-              <div class="mt-8 border-t border-gray-200 pt-5">
+              <div class="mt-8 border-t border-[var(--border)] pt-5">
                 <div class="mb-3 flex items-center justify-between">
                   <h2 class="m-0 text-2xl font-bold">Frames</h2>
-                  <span class="text-sm text-gray-500">{event.frames.length} option{event.frames.length === 1 ? '' : 's'}</span>
+                  <span class="text-sm text-[var(--text-muted)]">{event.frames.length} option{event.frames.length === 1 ? '' : 's'}</span>
                 </div>
                 <div class="grid grid-cols-3 gap-3 md:grid-cols-5">
                   {event.frames.map((frame, index) => (
                     <button
                       type="button"
-                      class={`event-frame-btn aspect-square overflow-hidden rounded-xl border border-gray-200 bg-white p-0 transition-transform duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:-translate-y-0.5 ${index === 0 ? 'ring-2 ring-[#4285f4]' : ''}`}
+                      class={`event-frame-btn aspect-square overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--surface)] p-0 transition-transform duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:-translate-y-0.5 ${index === 0 ? 'ring-2 ring-[#4285f4]' : ''}`}
                       data-frame-id={frame.id}
                       data-frame-overlay={frame.overlayPath}
                     >
@@ -109,10 +110,10 @@ const pageDescription = `Upload your photo and apply ${event.title} frames in DP
                 </div>
               </div>
 
-              <div class="mt-7 border-t border-gray-200 pt-5">
+              <div class="mt-7 border-t border-[var(--border)] pt-5">
                 <h2 class="m-0 text-2xl font-bold">About This Event</h2>
-                <p class="mt-4 max-w-2xl text-lg leading-relaxed text-gray-700">{event.description}</p>
-                <div class="mt-5 inline-flex items-center gap-2 rounded-full border border-gray-300 bg-gray-100 px-4 py-2 text-sm text-gray-700">
+                <p class="mt-4 max-w-2xl text-lg leading-relaxed text-[var(--text-secondary)]">{event.description}</p>
+                <div class="mt-5 inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--surface-hover)] px-4 py-2 text-sm text-[var(--text-secondary)]">
                   <a href={event.externalLink} target="_blank" rel="noopener noreferrer">
                     Visit the event
                   </a>
@@ -135,7 +136,6 @@ const pageDescription = `Upload your photo and apply ${event.title} frames in DP
       let selectedFrameId = defaultFrameId;
       const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
       const ALLOWED_TYPES = new Set(['image/png', 'image/jpeg', 'image/webp']);
-      const SESSION_IMAGE_KEY = 'dpblast-customize-image';
 
       const photoInput = document.getElementById('photo');
       const statusEl = document.getElementById('upload-status');
@@ -147,7 +147,7 @@ const pageDescription = `Upload your photo and apply ${event.title} frames in DP
         statusEl.textContent = message;
         statusEl.className = isError
           ? 'mt-3 text-center text-sm text-red-600'
-          : 'mt-3 text-center text-sm text-gray-600';
+          : 'mt-3 text-center text-sm text-[var(--text-secondary)]';
       };
 
       const toDataUrl = (file) =>
@@ -207,18 +207,16 @@ const pageDescription = `Upload your photo and apply ${event.title} frames in DP
 
           try {
             const dataUrl = await toDataUrl(file);
-            try {
-              sessionStorage.setItem(
-                SESSION_IMAGE_KEY,
-                JSON.stringify({
-                  eventSlug,
-                  fileName: file.name,
-                  mimeType: file.type,
-                  dataUrl,
-                }),
-              );
-            } catch {
-              // Some browsers reject large session payloads. Continue and allow upload on next page.
+            const stored = await window.dpblastPhotos.save({
+              eventSlug, fileName: file.name, mimeType: file.type, dataUrl,
+            });
+            if (!stored) {
+              updateStatus('Your browser could not save this photo. Open Customize and choose it again there.', true);
+              const link = document.createElement('a');
+              link.href = `/events/${encodeURIComponent(eventSlug)}/customize?frameId=${encodeURIComponent(selectedFrameId)}`;
+              link.textContent = ' Open Customize';
+              statusEl.appendChild(link);
+              return;
             }
 
             const nextUrl = `/events/${encodeURIComponent(eventSlug)}/customize?frameId=${encodeURIComponent(selectedFrameId)}`;

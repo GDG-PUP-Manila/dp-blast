@@ -33,6 +33,8 @@ Each phase must complete the following before the next phase begins:
 
 **Handover note:** Phases 0-5 are complete in production. Prefer code under `src/` and `data/` over outdated "in-progress" labels. Remaining intentional work is Phase 6 hardening and Phase 7 formal QA.
 
+**Local update 2026-10-17:** User-requested improvements to phases 3-5 include themes, IndexedDB photo handoff, desktop dragging, and accessibility fixes. Chromium acceptance coverage has been added for phase 7; release checklist and broader device testing remain. These improvements have not been pushed or deployed. See centralized-context for details.
+
 ## Success Metrics
 
 1. A first-time user can generate a framed image in under 30 seconds.
@@ -188,7 +190,7 @@ Let users submit a valid photo and chosen frame safely and reliably.
 2. Event uploader page routed by slug.
 3. Upload control and frame picker scoped to route event.
 4. Validation for PNG/JPG/WEBP and 10MB max.
-5. Handoff to customize via `sessionStorage` + query `frameId`.
+5. Handoff to customize via IndexedDB with `sessionStorage` fallback + query `frameId` (local 2026-10-17 update).
 
 ### Acceptance Criteria
 
@@ -331,7 +333,7 @@ Ship the MVP with verification, observability, and a controlled rollout.
 
 ### Deliverables
 
-1. Test plan / automated tests (not yet in repo).
+1. Chromium browser acceptance checks in `tests/editor.spec.ts` (local 2026-10-17 update); broader device testing remains.
 2. Release checklist (not yet formalized in repo).
 3. Known issues log (not yet formalized in repo).
 4. Initial analytics event (download tracking shipped).

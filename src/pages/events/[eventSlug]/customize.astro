@@ -1,4 +1,5 @@
 ---
+import ThemeToggle from '../../../components/ThemeToggle.astro';
 import '../../../styles/global.css';
 import { getEventBySlug } from '../../../../data/events';
 import PreviewPane from '../../../components/customize/PreviewPane.astro';
@@ -29,31 +30,33 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
       imagePath={selectedFrame?.thumbnailPath ?? '/cosmos_dp_blast.png'}
     />
   </head>
-  <body class="relative min-h-screen overflow-x-hidden bg-[#f8f9fa] font-['Outfit','Segoe_UI',sans-serif] text-[#202124] [--nav-h:4.5rem] max-sm:[--nav-h:4rem]">
+  <body class="relative min-h-screen overflow-x-hidden bg-[var(--background)] font-['Outfit','Segoe_UI',sans-serif] text-[var(--foreground)] [--nav-h:4.5rem] max-sm:[--nav-h:4rem]">
     <div class="pointer-events-none fixed inset-0 -z-20" aria-hidden="true">
       <div class="absolute left-[12%] top-[18%] h-36 w-36 rounded-full bg-[#4285f4]/15 blur-3xl"></div>
       <div class="absolute right-[8%] top-[12%] h-28 w-28 rounded-full bg-[#fbbc04]/12 blur-2xl"></div>
       <div class="absolute bottom-[16%] right-[12%] h-40 w-40 rounded-full bg-[#34a853]/12 blur-3xl"></div>
     </div>
 
-    <header class="sticky top-0 z-20 h-(--nav-h) border-b border-gray-200/90 bg-white/85 px-[clamp(1rem,3vw,2.5rem)] backdrop-blur-md max-sm:px-3.5">
+    <header class="sticky top-0 z-20 h-(--nav-h) border-b border-[var(--border)] bg-[var(--surface-translucent)] px-[clamp(1rem,3vw,2.5rem)] backdrop-blur-md max-sm:px-3.5">
       <div class="mx-auto flex h-full w-full max-w-7xl items-center justify-between">
-        <a class="inline-flex items-center no-underline" href="/" aria-label="GDG Frames home">
+        <a class="inline-flex shrink-0 items-center no-underline" href="/" aria-label="GDG Frames home">
           <img src="/logo.png" alt="DP Blast" class="h-10 w-auto max-sm:h-8" loading="eager" decoding="async" />
         </a>
         <div class="flex items-center gap-2.5">
+          <ThemeToggle />
           <button
             type="button"
             data-edit-name-trigger
-            class="inline-flex items-center justify-center rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-bold text-gray-700 shadow-[0_8px_20px_rgba(17,24,39,0.07)] transition-transform duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:-translate-y-0.5 hover:bg-gray-50"
+            class="inline-flex items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface)] px-4 py-2 text-sm font-bold text-[var(--text-secondary)] shadow-[0_8px_20px_rgba(17,24,39,0.07)] transition-transform duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:-translate-y-0.5 hover:bg-[var(--surface-muted)]"
           >
             Edit Name
           </button>
           <a
-            class="inline-flex items-center justify-center rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-bold text-gray-700 no-underline shadow-[0_8px_20px_rgba(17,24,39,0.07)] transition-transform duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:-translate-y-0.5 hover:bg-gray-50"
+            class="inline-flex items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface)] px-4 py-2 text-sm font-bold text-[var(--text-secondary)] no-underline shadow-[0_8px_20px_rgba(17,24,39,0.07)] transition-transform duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:-translate-y-0.5 hover:bg-[var(--surface-muted)]"
             href={`/events/${event.slug}`}
           >
-            Back to uploader
+            <span class="sm:hidden">Back</span>
+            <span class="hidden sm:inline">Back to uploader</span>
           </a>
         </div>
       </div>
@@ -61,10 +64,10 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
 
     <main class="relative z-10 py-8 max-sm:pb-10 brand-grid-bg brand-grid-bg--fade">
       <section class="mx-auto w-full max-w-7xl px-4" aria-label="Customize your DP frame">
-        <div class="rounded-4xl border border-gray-200 bg-white p-4 shadow-[0_20px_60px_rgba(17,24,39,0.14)] md:p-7 lg:p-9">
+        <div class="rounded-4xl border border-[var(--border)] bg-[var(--surface)] p-4 shadow-[0_20px_60px_rgba(17,24,39,0.14)] md:p-7 lg:p-9">
           <div class="mb-8">
             <h1 class="m-0 text-3xl font-extrabold tracking-tight md:text-4xl">Customize Your Photo</h1>
-            <p class="mt-2 text-base text-gray-600">
+            <p class="mt-2 text-base text-[var(--text-secondary)]">
               {event.title} · Adjust your layout and download your customized DP.
             </p>
           </div>
@@ -107,7 +110,6 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
       const MAX_PREVIEW_EDGE = 1024;
       const MAX_EXPORT_EDGE = 2048;
       const ALLOWED_TYPES = new Set(['image/png', 'image/jpeg', 'image/webp']);
-      const SESSION_IMAGE_KEY = 'dpblast-customize-image';
       const HOLD_TIP_SEEN_KEY = 'dpblast-hold-controls-tip-seen';
       const PINCH_TIP_SEEN_KEY = 'dpblast-pinch-tip-seen';
       const USER_NAME_KEY = 'dpblast-user-name';
@@ -168,7 +170,7 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
           statusEl.textContent = message;
           statusEl.className = isError
             ? 'mt-3 text-sm text-red-600'
-            : 'mt-3 text-sm text-gray-600';
+            : 'mt-3 text-sm text-[var(--text-secondary)]';
         };
 
         const setDownloadLoading = (isLoading) => {
@@ -257,8 +259,8 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
           canvasHeight,
           photoImage,
           frameImage,
-          offsetScaleX,
-          offsetScaleY,
+          offsetScaleX = 1,
+          offsetScaleY = 1,
         }) => {
           targetCtx.clearRect(0, 0, canvasWidth, canvasHeight);
 
@@ -453,31 +455,10 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
             reader.readAsDataURL(file);
           });
 
-        const readPersistedImage = () => {
-          try {
-            const raw = sessionStorage.getItem(SESSION_IMAGE_KEY);
-            if (!raw) return null;
-            const parsed = JSON.parse(raw);
-            if (parsed?.eventSlug !== eventSlug || typeof parsed?.dataUrl !== 'string') {
-              return null;
-            }
-            return parsed;
-          } catch {
-            return null;
-          }
-        };
+        const readPersistedImage = () => window.dpblastPhotos.load(eventSlug);
 
-        const persistImage = (fileName, mimeType, dataUrl) => {
-          sessionStorage.setItem(
-            SESSION_IMAGE_KEY,
-            JSON.stringify({
-              eventSlug,
-              fileName,
-              mimeType,
-              dataUrl,
-            }),
-          );
-        };
+        const persistImage = (fileName, mimeType, dataUrl) =>
+          window.dpblastPhotos.save({ eventSlug, fileName, mimeType, dataUrl });
 
         const applyPhotoFromDataUrl = async (dataUrl) => {
           activePhotoImage = await loadImage(dataUrl);
@@ -896,9 +877,10 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
           captionPopupStatus.textContent = message;
           captionPopupStatus.className = isError
             ? 'm-0 mt-2 min-h-5 text-sm text-red-600'
-            : 'm-0 mt-2 min-h-5 text-sm text-gray-600';
+            : 'm-0 mt-2 min-h-5 text-sm text-[var(--text-secondary)]';
         };
 
+        let restoreCaptionFocus;
         const openCaptionPopup = (caption) => {
           if (
             !(captionPopup instanceof HTMLDivElement) ||
@@ -910,17 +892,17 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
           captionPopupText.value = caption;
           captionPopup.classList.remove('hidden');
           captionPopup.classList.add('flex');
+          restoreCaptionFocus = window.dpblastDialogFocus(captionPopup, downloadButton);
           setCaptionPopupStatus('Caption is ready.');
         };
 
-        const closeCaptionPopup = (redirectHome = false) => {
+        const closeCaptionPopup = () => {
           if (!(captionPopup instanceof HTMLDivElement)) return;
           captionPopup.classList.add('hidden');
           captionPopup.classList.remove('flex');
 
-          if (redirectHome) {
-            window.location.href = '/';
-          }
+          restoreCaptionFocus?.();
+          restoreCaptionFocus = undefined;
         };
 
         const trackDownload = () => {
@@ -1065,8 +1047,8 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
 
               const dataUrl = await toDataUrl(file);
               await applyPhotoFromDataUrl(dataUrl);
-              persistImage(file.name, file.type, dataUrl);
-              setCanvasStatus('Photo loaded. Fine-tune and download when ready.');
+              const stored = await persistImage(file.name, file.type, dataUrl);
+              setCanvasStatus(stored ? 'Photo loaded. Fine-tune and download when ready.' : 'Photo loaded for this visit. Browser storage is unavailable; download before leaving.');
             } catch {
               setCanvasStatus('Could not load the selected photo.', true);
             }
@@ -1142,16 +1124,16 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
         }
 
         if (captionPopupCloseButton instanceof HTMLButtonElement) {
-          captionPopupCloseButton.addEventListener('click', () => closeCaptionPopup(true));
+          captionPopupCloseButton.addEventListener('click', () => closeCaptionPopup());
         }
 
         if (captionPopupBackdrop instanceof HTMLDivElement) {
-          captionPopupBackdrop.addEventListener('click', () => closeCaptionPopup(true));
+          captionPopupBackdrop.addEventListener('click', () => closeCaptionPopup());
         }
 
         window.addEventListener('keydown', (event) => {
-          if (event.key === 'Escape') {
-            closeCaptionPopup(true);
+          if (event.key === 'Escape' && captionPopup instanceof HTMLElement && !captionPopup.classList.contains('hidden')) {
+            closeCaptionPopup();
           }
         });
 
@@ -1166,7 +1148,7 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
               await setFrameFromButton(fallbackButton);
             }
 
-            const persisted = readPersistedImage();
+            const persisted = await readPersistedImage();
             if (persisted?.dataUrl) {
               await applyPhotoFromDataUrl(persisted.dataUrl);
               setCanvasStatus('Loaded your selected photo. Adjust and download when ready.');
@@ -1183,6 +1165,36 @@ const pageDescription = `Customize your ${event.title} profile frame with zoom, 
         maybeShowHoldTip();
         setupMobileGestureHint();
         setupTouchGestures();
+        if (canvas instanceof HTMLCanvasElement) {
+          let drag;
+          canvas.addEventListener('pointerdown', event => {
+            if (event.pointerType === 'touch' || event.button !== 0 || !activePhotoImage) return;
+            const rect = canvas.getBoundingClientRect();
+            drag = { id: event.pointerId, x: event.clientX, y: event.clientY, offsetX: state.offsetX, offsetY: state.offsetY, scaleX: canvas.width / rect.width, scaleY: canvas.height / rect.height };
+            canvas.setPointerCapture(event.pointerId);
+            canvas.classList.add('is-dragging');
+            event.preventDefault();
+          });
+          canvas.addEventListener('pointermove', event => {
+            if (!drag || event.pointerId !== drag.id) return;
+            const xBounds = getRangeBounds(xRange, -500, 500);
+            const yBounds = getRangeBounds(yRange, -500, 500);
+            state.offsetX = clamp(drag.offsetX + (event.clientX - drag.x) * drag.scaleX, xBounds.min, xBounds.max);
+            state.offsetY = clamp(drag.offsetY + (event.clientY - drag.y) * drag.scaleY, yBounds.min, yBounds.max);
+            syncRangeInputs();
+            updateValueLabels();
+            renderCanvas();
+          });
+          const stopDrag = event => {
+            if (!drag || event.pointerId !== drag.id) return;
+            drag = undefined;
+            canvas.classList.remove('is-dragging');
+            if (canvas.hasPointerCapture(event.pointerId)) canvas.releasePointerCapture(event.pointerId);
+          };
+          canvas.addEventListener('pointerup', stopDrag);
+          canvas.addEventListener('pointercancel', stopDrag);
+          canvas.addEventListener('lostpointercapture', stopDrag);
+        }
         bootstrap();
       };
 

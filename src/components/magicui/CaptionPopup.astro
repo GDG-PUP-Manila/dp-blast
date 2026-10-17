@@ -1,22 +1,22 @@
 <div id="caption-popup" class="fixed inset-0 z-50 hidden items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="caption-popup-title">
   <div id="caption-popup-backdrop" class="absolute inset-0 bg-slate-950/55 backdrop-blur-sm" aria-hidden="true"></div>
 
-  <div class="relative w-full max-w-lg overflow-hidden rounded-3xl border border-white/35 bg-white/95 p-5 shadow-[0_28px_80px_rgba(2,6,23,0.36)] md:p-6">
+  <div class="relative w-full max-w-lg overflow-hidden rounded-3xl border border-[var(--border)] bg-[var(--surface-translucent)] p-5 shadow-[0_28px_80px_rgba(2,6,23,0.36)] md:p-6">
     <div class="pointer-events-none absolute -top-12 -right-10 h-36 w-36 rounded-full bg-[#4285f4]/25 blur-2xl" aria-hidden="true"></div>
     <div class="pointer-events-none absolute -bottom-14 -left-8 h-32 w-32 rounded-full bg-[#34a853]/20 blur-2xl" aria-hidden="true"></div>
 
     <div class="relative">
-      <h2 id="caption-popup-title" class="m-0 text-2xl font-black tracking-tight text-[#202124]">Generated Caption</h2>
-      <p class="m-0 mt-2 text-sm text-gray-600">Use this caption with your newly downloaded DP.</p>
+      <h2 id="caption-popup-title" class="m-0 text-2xl font-black tracking-tight text-[var(--foreground)]">Generated Caption</h2>
+      <p class="m-0 mt-2 text-sm text-[var(--text-secondary)]">Use this caption with your newly downloaded DP.</p>
 
       <textarea
         id="caption-popup-text"
         rows="6"
         readonly
-        class="mt-4 w-full rounded-2xl border border-gray-200 bg-gray-50 px-3 py-3 text-sm leading-relaxed text-gray-700 outline-none"
+        class="mt-4 w-full rounded-2xl border border-[var(--border)] bg-[var(--surface-muted)] px-3 py-3 text-sm leading-relaxed text-[var(--text-secondary)] outline-none"
       ></textarea>
 
-      <p id="caption-popup-status" class="m-0 mt-2 min-h-5 text-sm text-gray-600"></p>
+      <p id="caption-popup-status" class="m-0 mt-2 min-h-5 text-sm text-[var(--text-secondary)]"></p>
 
       <div class="mt-4 flex gap-2 max-sm:flex-col">
         <button
@@ -29,7 +29,7 @@
         <button
           id="caption-popup-close"
           type="button"
-          class="inline-flex flex-1 items-center justify-center rounded-full border border-gray-300 bg-white px-4 py-2.5 text-sm font-bold text-gray-700 transition-transform duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:-translate-y-0.5 hover:bg-gray-100"
+          class="inline-flex flex-1 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm font-bold text-[var(--text-secondary)] transition-transform duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:-translate-y-0.5 hover:bg-[var(--surface-hover)]"
         >
           Close
         </button>

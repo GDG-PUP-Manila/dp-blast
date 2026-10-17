@@ -20,6 +20,8 @@ const imageUrl = new URL(imagePath, Astro.site ?? Astro.url).toString();
 ---
 
 <meta charset="utf-8" />
+<script is:inline src="/theme.js"></script>
+<script is:inline src="/photo-storage.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="generator" content={Astro.generator} />
 <meta name="description" content={description} />
@@ -73,6 +75,7 @@ const imageUrl = new URL(imagePath, Astro.site ?? Astro.url).toString();
     };
 
     const closeModal = (modal) => {
+      modal.cleanup?.();
       modal.classList.remove('is-open');
       modal.classList.add('is-closing');
 
@@ -128,6 +131,18 @@ const imageUrl = new URL(imagePath, Astro.site ?? Astro.url).toString();
       `;
 
       document.body.appendChild(modal);
+      const restoreFocus = window.dpblastDialogFocus(modal);
+      const onEscape = (event) => {
+        if (event.key === 'Escape') {
+          event.stopImmediatePropagation();
+          closeModal(modal);
+        }
+      };
+      modal.addEventListener('keydown', onEscape);
+      modal.cleanup = () => {
+        modal.removeEventListener('keydown', onEscape);
+        restoreFocus();
+      };
       window.requestAnimationFrame(() => {
         modal.classList.add('is-open');
       });
@@ -136,10 +151,6 @@ const imageUrl = new URL(imagePath, Astro.site ?? Astro.url).toString();
       const input = modal.querySelector('#dpblast-name-input');
       const skipButton = modal.querySelector('#dpblast-name-skip');
       const backdrop = modal.querySelector('.dpblast-name-modal__backdrop');
-
-      if (input instanceof HTMLInputElement) {
-        window.setTimeout(() => input.focus(), 80);
-      }
 
       if (form instanceof HTMLFormElement) {
         form.addEventListener('submit', (event) => {
@@ -169,11 +180,7 @@ const imageUrl = new URL(imagePath, Astro.site ?? Astro.url).toString();
         });
       }
 
-      window.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape') {
-          closeModal(modal);
-        }
-      }, { once: true });
+
     };
 
     window.dpblastOpenNameModal = () => {
@@ -202,6 +209,11 @@ const imageUrl = new URL(imagePath, Astro.site ?? Astro.url).toString();
       const target = event.target;
       if (!(target instanceof Element)) return;
 
+      const photoTrigger = target.closest('[data-photo-trigger]');
+      if (photoTrigger) {
+        document.getElementById('photo')?.click();
+        return;
+      }
       const trigger = target.closest('[data-edit-name-trigger]');
       if (trigger) {
         event.preventDefault();
@@ -220,7 +232,7 @@ const imageUrl = new URL(imagePath, Astro.site ?? Astro.url).toString();
     });
 
     const bindGridParallax = () => {
-      if (window.matchMedia('(pointer: coarse)').matches) {
+      if (window.matchMedia('(pointer: coarse), (prefers-reduced-motion: reduce)').matches) {
         return;
       }
 

@@ -1,4 +1,5 @@
 ---
+import ThemeToggle from '../components/ThemeToggle.astro';
 import '../styles/global.css';
 import { events } from '../../data/events';
 
@@ -15,7 +16,7 @@ import Footer from '../components/Footer.astro';
 			imagePath="/api/og/sparkfest"
 		/>
 	</head>
-	<body class="relative min-h-screen overflow-x-hidden bg-[#f8f9fa] font-['Outfit','Segoe_UI',sans-serif] text-[#202124] [--nav-h:4.5rem] max-sm:[--nav-h:4rem]">
+	<body class="relative min-h-screen overflow-x-hidden bg-[var(--background)] font-['Outfit','Segoe_UI',sans-serif] text-[var(--foreground)] [--nav-h:4.5rem] max-sm:[--nav-h:4rem]">
 		<div class="pointer-events-none fixed inset-0 -z-20" aria-hidden="true">
 			<div class="absolute left-[12%] top-[18%] h-36 w-36 rounded-full bg-[#4285f4]/15 blur-3xl"></div>
 			<div class="absolute right-[8%] top-[12%] h-28 w-28 rounded-full bg-[#fbbc04]/12 blur-2xl"></div>
@@ -23,13 +24,13 @@ import Footer from '../components/Footer.astro';
 		</div>
 
 		<div class="pointer-events-none fixed left-0 right-0 -z-20 flex h-[calc(100svh-var(--nav-h))] select-none items-center justify-center gap-[clamp(1rem,4vw,4rem)] opacity-[0.022]" aria-hidden="true">
-			<span class="scale-y-100 text-[clamp(12rem,44vw,46rem)] font-black text-slate-900">&lt;</span>
-			<span class="scale-y-100 text-[clamp(12rem,44vw,46rem)] font-black text-slate-900">&gt;</span>
+			<span class="scale-y-100 text-[clamp(12rem,44vw,46rem)] font-black text-[var(--foreground)]">&lt;</span>
+			<span class="scale-y-100 text-[clamp(12rem,44vw,46rem)] font-black text-[var(--foreground)]">&gt;</span>
 		</div>
 
 			<!-- Decorative hero shapes moved to hero section -->
 
-		<header class="sticky top-0 z-20 h-(--nav-h) border-b border-gray-200/90 bg-white/85 px-[clamp(1rem,3vw,2.5rem)] backdrop-blur-md max-sm:px-3.5">
+		<header class="sticky top-0 z-20 h-(--nav-h) border-b border-[var(--border)] bg-[var(--surface-translucent)] px-[clamp(1rem,3vw,2.5rem)] backdrop-blur-md max-sm:px-3.5">
 			<div class="mx-auto flex h-full w-full max-w-7xl items-center justify-between">
 				<a
 					class="inline-flex items-center no-underline"
@@ -45,6 +46,7 @@ import Footer from '../components/Footer.astro';
 					/>
 				</a>
 				<div class="flex items-center gap-2.5">
+          <ThemeToggle />
 					<a
 						class="inline-flex items-center justify-center rounded-full bg-[#4285f4] px-5 py-2.5 text-sm font-bold text-white no-underline shadow-[0_10px_24px_rgba(66,133,244,0.28)] transition-transform duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:scale-[1.03] hover:-translate-y-0.5 hover:shadow-[0_14px_28px_rgba(66,133,244,0.33)] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-[#4285f459] max-sm:px-3.5 max-sm:py-2 max-sm:text-[0.9rem]"
 						href="#events-section"
@@ -65,14 +67,14 @@ import Footer from '../components/Footer.astro';
 				</div>
 				<div class="relative z-10 flex flex-col items-center animate-[fade-in_650ms_cubic-bezier(0.2,0.8,0.2,1)_both]">
 
-				<h1 id="hero-title" class="m-0 leading-[0.9] tracking-[-0.045em] text-[#202124] mb-8 md:mb-12">
-					<span class="block text-[clamp(2.25rem,8.4vw,6.8rem)] font-black uppercase text-slate-900">FRAME.</span>
-					<span class="block text-[clamp(2.25rem,8.4vw,6.8rem)] font-black uppercase text-slate-900">CREATE.</span>
+				<h1 id="hero-title" class="m-0 leading-[0.9] tracking-[-0.045em] text-[var(--foreground)] mb-8 md:mb-12">
+					<span class="block text-[clamp(2.25rem,8.4vw,6.8rem)] font-black uppercase text-[var(--foreground)]">FRAME.</span>
+					<span class="block text-[clamp(2.25rem,8.4vw,6.8rem)] font-black uppercase text-[var(--foreground)]">CREATE.</span>
 					<span class="relative block text-[clamp(2.25rem,8.4vw,6.8rem)] font-black uppercase text-[#4285f4]">
 						SHARE.
 					</span>
 				</h1>
-				<p class="m-0 max-w-165 text-[clamp(1.1rem,2.8vw,1.5rem)] text-gray-700 mb-8 md:mb-12">
+				<p class="m-0 max-w-165 text-[clamp(1.1rem,2.8vw,1.5rem)] text-[var(--text-secondary)] mb-8 md:mb-12">
 					Upload your photo, apply a frame, and download your profile-ready image in seconds.
 				</p>
 				<div class="mt-6 flex flex-wrap justify-center gap-6 max-sm:w-full">
@@ -83,7 +85,7 @@ import Footer from '../components/Footer.astro';
 						Browse Events
 					</a>
 					<a
-						class="inline-flex items-center justify-center rounded-2xl border border-gray-300 bg-white px-5 py-3 text-base font-bold text-gray-700 no-underline shadow-[0_8px_20px_rgba(17,24,39,0.07)] transition-transform duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:-translate-y-0.5 hover:bg-gray-50 hover:shadow-[0_12px_24px_rgba(17,24,39,0.12)] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-[#4285f433] max-sm:w-full max-sm:max-w-[320px]"
+						class="inline-flex items-center justify-center rounded-2xl border border-[var(--border)] bg-[var(--surface)] px-5 py-3 text-base font-bold text-[var(--text-secondary)] no-underline shadow-[0_8px_20px_rgba(17,24,39,0.07)] transition-transform duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:-translate-y-0.5 hover:bg-[var(--surface-muted)] hover:shadow-[0_12px_24px_rgba(17,24,39,0.12)] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-[#4285f433] max-sm:w-full max-sm:max-w-[320px]"
 						href="#process-title"
 					>
 						See Process
@@ -98,17 +100,17 @@ import Footer from '../components/Footer.astro';
 					<div class="mb-7 flex items-end justify-between gap-4 max-sm:flex-col max-sm:items-start">
 						<div>
 							<p class="m-0 text-sm font-semibold uppercase tracking-[0.18em] text-[#4285f4]">How it works</p>
-							<h2 id="process-title" class="m-0 mt-1 text-3xl font-black tracking-tight text-[#202124] md:texzt-4xl">
+							<h2 id="process-title" class="m-0 mt-1 text-3xl font-black tracking-tight text-[var(--foreground)] md:texzt-4xl">
 								Upload -> Frame -> Share
 							</h2>
 						</div>
-						<p class="m-0 max-w-xl text-base text-gray-600">
+						<p class="m-0 max-w-xl text-base text-[var(--text-secondary)]">
 							Three quick steps to generate your event-ready profile photo.
 						</p>
 					</div>
 
 					<div class="grid gap-5 md:grid-cols-3">
-						<article class="rounded-3xl border border-gray-200 bg-white p-6 shadow-[0_10px_30px_rgba(17,24,39,0.06)] animate-[fade-in_700ms_cubic-bezier(0.2,0.8,0.2,1)_both]">
+						<article class="rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-6 shadow-[0_10px_30px_rgba(17,24,39,0.06)] animate-[fade-in_700ms_cubic-bezier(0.2,0.8,0.2,1)_both]">
 							<div class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-[#4285f4] text-white shadow-[0_8px_20px_rgba(66,133,244,0.35)]">
 								<svg viewBox="0 0 24 24" class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
 									<path d="M12 16V5" />
@@ -116,13 +118,13 @@ import Footer from '../components/Footer.astro';
 									<rect x="4" y="16" width="16" height="4" rx="1" />
 								</svg>
 							</div>
-							<h3 class="m-0 mt-5 text-4xl font-black tracking-tight text-[#202124]">Upload</h3>
-							<p class="m-0 mt-3 text-lg leading-relaxed text-gray-600">
+							<h3 class="m-0 mt-5 text-4xl font-black tracking-tight text-[var(--foreground)]">Upload</h3>
+							<p class="m-0 mt-3 text-lg leading-relaxed text-[var(--text-secondary)]">
 								Select your best photo from your device.
 							</p>
 						</article>
 
-						<article class="rounded-3xl border border-gray-200 bg-white p-6 shadow-[0_10px_30px_rgba(17,24,39,0.06)] animate-[fade-in_800ms_cubic-bezier(0.2,0.8,0.2,1)_both]">
+						<article class="rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-6 shadow-[0_10px_30px_rgba(17,24,39,0.06)] animate-[fade-in_800ms_cubic-bezier(0.2,0.8,0.2,1)_both]">
 							<div class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-[#ea4335] text-white shadow-[0_8px_20px_rgba(234,67,53,0.32)]">
 								<svg viewBox="0 0 24 24" class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
 									<rect x="3" y="4" width="18" height="16" rx="2" />
@@ -130,14 +132,14 @@ import Footer from '../components/Footer.astro';
 									<path d="m21 15-4-4-6 6" />
 								</svg>
 							</div>
-							<h3 class="m-0 mt-5 text-4xl font-black tracking-tight text-[#202124]">Frame</h3>
-							<p class="m-0 mt-3 text-lg leading-relaxed text-gray-600">
+							<h3 class="m-0 mt-5 text-4xl font-black tracking-tight text-[var(--foreground)]">Frame</h3>
+							<p class="m-0 mt-3 text-lg leading-relaxed text-[var(--text-secondary)]">
 								Choose an event frame and preview instantly.
 							</p>
 						</article>
 
-						<article class="rounded-3xl border border-gray-200 bg-white p-6 shadow-[0_10px_30px_rgba(17,24,39,0.06)] animate-[fade-in_900ms_cubic-bezier(0.2,0.8,0.2,1)_both]">
-							<div class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-[#fbbc04] text-[#202124] shadow-[0_8px_20px_rgba(251,188,4,0.35)]">
+						<article class="rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-6 shadow-[0_10px_30px_rgba(17,24,39,0.06)] animate-[fade-in_900ms_cubic-bezier(0.2,0.8,0.2,1)_both]">
+							<div class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-[#fbbc04] text-[var(--foreground)] shadow-[0_8px_20px_rgba(251,188,4,0.35)]">
 								<svg viewBox="0 0 24 24" class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
 									<circle cx="18" cy="5" r="3" />
 									<circle cx="6" cy="12" r="3" />
@@ -146,8 +148,8 @@ import Footer from '../components/Footer.astro';
 									<path d="m15.3 6.6-6.6 3.8" />
 								</svg>
 							</div>
-							<h3 class="m-0 mt-5 text-4xl font-black tracking-tight text-[#202124]">Share</h3>
-							<p class="m-0 mt-3 text-lg leading-relaxed text-gray-600">
+							<h3 class="m-0 mt-5 text-4xl font-black tracking-tight text-[var(--foreground)]">Share</h3>
+							<p class="m-0 mt-3 text-lg leading-relaxed text-[var(--text-secondary)]">
 								Download your result and post it anywhere.
 							</p>
 						</article>
@@ -160,11 +162,11 @@ import Footer from '../components/Footer.astro';
 					<div class="mb-7 flex items-end justify-between gap-4 max-sm:flex-col max-sm:items-start">
 						<div>
 							<p class="m-0 text-sm font-semibold uppercase tracking-[0.18em] text-[#4285f4]">Available events</p>
-							<h2 class="m-0 mt-1 text-3xl font-black tracking-tight text-[#202124] md:text-4xl">
+							<h2 class="m-0 mt-1 text-3xl font-black tracking-tight text-[var(--foreground)] md:text-4xl">
 								Choose an event frame
 							</h2>
 						</div>
-						<p class="m-0 max-w-xl text-base text-gray-600">
+						<p class="m-0 max-w-xl text-base text-[var(--text-secondary)]">
 							Select an event to open its dedicated frame uploader page.
 						</p>
 					</div>
@@ -174,9 +176,9 @@ import Footer from '../components/Footer.astro';
 							<a
 								href={`/events/${event.slug}`}
 								data-requires-name
-								class={`group rounded-3xl border border-gray-200 bg-white p-4 no-underline shadow-[0_12px_30px_rgba(17,24,39,0.08)] transition-transform duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:-translate-y-1 hover:shadow-[0_18px_36px_rgba(17,24,39,0.14)] animate-[fade-in_${600+idx*80}ms_cubic-bezier(0.2,0.8,0.2,1)_both]`}
+								class={`group rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-4 no-underline shadow-[0_12px_30px_rgba(17,24,39,0.08)] transition-transform duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:-translate-y-1 hover:shadow-[0_18px_36px_rgba(17,24,39,0.14)] animate-[fade-in_${600+idx*80}ms_cubic-bezier(0.2,0.8,0.2,1)_both]`}
 							>
-								<div class="overflow-hidden rounded-2xl border border-gray-200 bg-gray-100">
+								<div class="overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface-hover)]">
 									<img
 										src={event.coverImagePath}
 										alt={`${event.title} cover`}
@@ -185,9 +187,9 @@ import Footer from '../components/Footer.astro';
 										decoding="async"
 									/>
 								</div>
-								<h3 class="m-0 mt-4 text-2xl font-black tracking-tight text-[#202124]">{event.title}</h3>
-								<p class="m-0 mt-2 text-base text-gray-600">By {event.creator}</p>
-								<p class="m-0 mt-1 text-sm text-gray-500">{event.frames.length} frame{event.frames.length === 1 ? '' : 's'} available</p>
+								<h3 class="m-0 mt-4 text-2xl font-black tracking-tight text-[var(--foreground)]">{event.title}</h3>
+								<p class="m-0 mt-2 text-base text-[var(--text-secondary)]">By {event.creator}</p>
+								<p class="m-0 mt-1 text-sm text-[var(--text-muted)]">{event.frames.length} frame{event.frames.length === 1 ? '' : 's'} available</p>
 								<span class="mt-4 inline-flex items-center rounded-full bg-[#4285f4] px-4 py-2 text-sm font-bold text-white">
 									Open uploader
 								</span>

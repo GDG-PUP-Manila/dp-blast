@@ -58,6 +58,7 @@ Other scripts:
 | --- | --- |
 | `npm run build` | Production build |
 | `npm run preview` | Preview the build |
+| `npm test` | Chromium browser acceptance checks (run `npx playwright install chromium` once) |
 | `npm run astro ...` | Astro CLI |
 
 Env and secrets: see [FLAGS.md](FLAGS.md) and [docs/state.md](docs/state.md).
@@ -65,7 +66,7 @@ Env and secrets: see [FLAGS.md](FLAGS.md) and [docs/state.md](docs/state.md).
 ## Photo / PII handling
 
 - Anonymous use. No accounts or auth.
-- Photos stay in the browser (`sessionStorage` / canvas) for the customize and download flow.
+- Photos stay in the browser (IndexedDB with a `sessionStorage` fallback, plus canvas) for the customize and download flow. One photo is retained per tab; records expire from restoration after 24 hours and old IndexedDB records are removed on a subsequent upload. Clearing site data removes stored photos.
 - Download analytics may record event slug, frame id, path, and user-agent in Supabase. Photos are not uploaded for analytics.
 
 ## Project status (handover)
@@ -77,7 +78,7 @@ Env and secrets: see [FLAGS.md](FLAGS.md) and [docs/state.md](docs/state.md).
 | Handover date | 2026-09-02 |
 | Handover | 2026-09-02 |
 
-Remaining work is hardening (rate limits, abuse controls) and formal QA, not greenfield feature build. Prefer reading shipped routes under `src/pages/` over stale phase checkboxes.
+Remaining work is hardening (rate limits, abuse controls) and a formal release checklist with broader cross-device QA. Chromium acceptance checks now cover the editor, storage, keyboard behavior, and themes. Prefer reading shipped routes under `src/pages/` over stale phase checkboxes.
 
 ## Documentation
 

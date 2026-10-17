@@ -1,7 +1,7 @@
 # Project State: DP Blast
 
 **Owner:** GDG PUP Technology (incoming CTO)  
-**Last updated:** 2026-09-02  
+**Last updated:** 2026-10-17
 **Handover:** 2026-09-02  
 
 ## Position
@@ -17,3 +17,5 @@
 **Engagement type:** Internal chapter product (event tooling), not a commercial engagement.
 
 Core upload -> customize -> download loop is shipped. Prefer operate/harden over greenfield rebuild. See [centralized-context.md](centralized-context.md) for routes and phase honesty, and [../FLAGS.md](../FLAGS.md) for the improvement register.
+
+Local development update (2026-10-17): theme preferences, IndexedDB photo handoff, desktop dragging, and keyboard/dialog fixes implemented with Chromium acceptance coverage. These changes have not been pushed or deployed. Site maintainer credit is Kian Angelo M. Florendo.
