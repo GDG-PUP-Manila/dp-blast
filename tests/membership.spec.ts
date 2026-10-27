@@ -15,15 +15,17 @@ const uploadPhoto = async (page: Page) => {
 };
 
 const assertCaption = (caption: string, name: string) => {
+  expect(caption).toContain('𝙏𝙃𝙀 𝙀𝙓𝙋𝙀𝘿𝙄𝙏𝙄𝙊𝙉 𝙎𝙏𝘼𝙍𝙏𝙎 𝙉𝙊𝙒!');
   expect(caption).toContain('After traversing a long, vast wormhole');
   expect(caption).toContain(`Hi, I'm ${name}!`);
-  expect(caption).toContain('at  !');
-  expect(caption).toContain("I'm all set to , ,     !");
-  expect(caption).toMatch(/^ Layout by$/m);
-  expect(caption).toMatch(/^️ Assets by$/m);
-  expect(caption).toMatch(/^✍️ Spiel by$/m);
+  expect(caption).toContain('at 𝗚𝗗𝗚 𝗣𝗨𝗣!');
+  expect(caption).toContain("I'm all set to 𝗴𝗿𝗼𝘄, 𝗰𝗼𝗻𝗻𝗲𝗰𝘁, 𝗮𝗻𝗱 𝗲𝘅𝗽𝗹𝗼𝗿𝗲 𝗯𝗲𝘆𝗼𝗻𝗱 𝘁𝗵𝗲 𝗴𝗮𝗹𝗮𝘅𝗶𝗲𝘀!");
+  expect(caption).toContain('🎨 Layout by 𝘝𝘪𝘯𝘤𝘦 𝘋𝘦𝘭𝘪𝘨𝘦𝘯𝘵𝘦');
+  expect(caption).toContain('🖌️ Assets by 𝘒𝘦𝘯𝘯𝘦𝘵𝘩 𝘔𝘢𝘳𝘲𝘶𝘦𝘻');
+  expect(caption).toContain('✍️ Spiel by 𝘛𝘰𝘮𝘮𝘺 𝘙𝘦𝘵𝘶𝘭𝘪𝘯');
   expect(caption.split('https://forms.gle/6bwhYTCKF8wbymuKA')).toHaveLength(4);
   expect(caption.split('https://surl.li/ywgejf')).toHaveLength(4);
+  expect(caption.split('frame.gdgpup.org')).toHaveLength(4);
   for (const hashtag of ['#GDGPUP27', '#GoogleDevelopersGroups', '#GDGrowsBeyond', '#GDGInfoSession2026', '#LeapWithGDG']) {
     expect(caption).toContain(hashtag);
   }
@@ -48,7 +50,7 @@ test('membership frame is discoverable and exports a personalized photo with a c
   await expect(page.locator('#events-section a').first()).toHaveAttribute('href', eventPath);
   await card.click();
   await page.locator('#dpblast-name-input').fill('Kian QA');
-  await page.getByRole('button', { name: 'Save Name', exact: true }).click();
+  await page.getByRole('button', { name: 'Continue', exact: true }).click();
   await expect(page).toHaveURL(eventPath);
   await expect(page.locator('h1')).toContainText('Membership');
   await expect(page.locator('#frame-preview')).toHaveAttribute('src', framePath);

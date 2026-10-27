@@ -139,7 +139,7 @@ test('reduced motion name dialog remains visible, traps focus, Escape restores i
   await expect(dialog).toHaveCSS('opacity', '1');
   await expect(page.locator('#dpblast-name-input')).toBeFocused();
   await page.keyboard.press('Shift+Tab');
-  await expect(page.getByRole('button', { name: 'Continue as Sparkmate' })).toBeFocused();
+  await expect(page.getByRole('button', { name: 'Continue', exact: true })).toBeFocused();
   await page.keyboard.press('Tab');
   await expect(page.locator('#dpblast-name-input')).toBeFocused();
   await page.keyboard.press('Escape');

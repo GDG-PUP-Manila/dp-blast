@@ -123,8 +123,7 @@ const imageUrl = new URL(imagePath, Astro.site ?? Astro.url).toString();
             <input id="dpblast-name-input" class="dpblast-name-modal__input" type="text" placeholder="Type your name" maxlength="80" autocomplete="name" value="${escapedName(currentName)}" />
 
             <div class="dpblast-name-modal__actions">
-              <button type="submit" class="dpblast-name-modal__btn dpblast-name-modal__btn--primary">Save Name</button>
-              <button type="button" id="dpblast-name-skip" class="dpblast-name-modal__btn dpblast-name-modal__btn--secondary">Continue as Sparkmate</button>
+              <button type="submit" class="dpblast-name-modal__btn dpblast-name-modal__btn--primary">Continue</button>
             </div>
           </form>
         </div>
@@ -149,7 +148,6 @@ const imageUrl = new URL(imagePath, Astro.site ?? Astro.url).toString();
 
       const form = modal.querySelector('#dpblast-name-form');
       const input = modal.querySelector('#dpblast-name-input');
-      const skipButton = modal.querySelector('#dpblast-name-skip');
       const backdrop = modal.querySelector('.dpblast-name-modal__backdrop');
 
       if (form instanceof HTMLFormElement) {
@@ -157,16 +155,6 @@ const imageUrl = new URL(imagePath, Astro.site ?? Astro.url).toString();
           event.preventDefault();
           const value = input instanceof HTMLInputElement ? input.value : '';
           const savedName = persistName(value);
-          if (typeof onComplete === 'function') {
-            onComplete(savedName);
-          }
-          closeModal(modal);
-        });
-      }
-
-      if (skipButton instanceof HTMLButtonElement) {
-        skipButton.addEventListener('click', () => {
-          const savedName = persistName('Sparkmate');
           if (typeof onComplete === 'function') {
             onComplete(savedName);
           }
