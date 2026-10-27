@@ -33,7 +33,9 @@ Each phase must complete the following before the next phase begins:
 
 **Handover note:** Phases 0-5 are complete in production. Prefer code under `src/` and `data/` over outdated "in-progress" labels. Remaining intentional work is Phase 6 hardening and Phase 7 formal QA.
 
-**Local update 2026-10-17:** User-requested improvements to phases 3-5 include themes, IndexedDB photo handoff, desktop dragging, and accessibility fixes. Chromium acceptance coverage has been added for phase 7; release checklist and broader device testing remain. These improvements have not been pushed or deployed. See centralized-context for details.
+**Editor update 2026-10-17:** User-requested improvements to phases 3-5 include themes, IndexedDB photo handoff, desktop dragging, and accessibility fixes, committed as `82e62da`. Chromium acceptance coverage has been added for phase 7; release checklist and broader device testing remain. See centralized-context for details.
+
+**Local catalog update 2026-10-27:** Phase 2 gains Membership Application ’27 at `/events/membership-2027`, with the provided transparent frame and caption. Caption gaps and credit names remain intentionally blank as requested. Existing upload, customize, caption-copy, and download routes handle the new catalog entry. This addition is committed locally; user push and deployment are pending.
 
 ## Success Metrics
 

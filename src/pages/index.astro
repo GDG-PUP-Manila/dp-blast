@@ -13,7 +13,7 @@ import Footer from '../components/Footer.astro';
 		<SiteHead
 			title="GDG DP Blast"
 			description="Upload your photo, apply an event frame, preview the result, and download your profile-ready image in seconds."
-			imagePath="/api/og/sparkfest"
+			imagePath={events[0] ? `/api/og/${events[0].slug}` : '/logo.png'}
 		/>
 	</head>
 	<body class="relative min-h-screen overflow-x-hidden bg-[var(--background)] font-['Outfit','Segoe_UI',sans-serif] text-[var(--foreground)] [--nav-h:4.5rem] max-sm:[--nav-h:4rem]">

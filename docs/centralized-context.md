@@ -51,7 +51,7 @@ Honest statuses as of handover 2026-09-02 (verified against `src/` and `data/`):
 | 4 | Image Processing Engine | done | Client canvas composite is the live path; Sharp `/api/process` remains as an alternate server path |
 | 5 | Preview, Download, and Result Experience | done | Customize route, controls, download, caption popup, analytics fire-and-forget |
 | 6 | Hardening and Abuse Prevention | planned | Size limits exist; no rate limiting, formal timeouts, or abuse suite |
-| 7 | QA, Release, and Feedback Loop | partial | Live site + download analytics; no automated test suite or formal release checklist in repo |
+| 7 | QA, Release, and Feedback Loop | partial | Live site + download analytics + Chromium acceptance tests; formal release checklist and broader device QA remain |
 
 ## Feature-to-Phase Map
 
@@ -101,7 +101,7 @@ Honest statuses as of handover 2026-09-02 (verified against `src/` and `data/`):
 
 ### Local development update: 2026-10-17
 
-Status: implemented locally, not pushed or deployed. Extends phases 3-5 with phase 7 acceptance coverage.
+Status: committed as `82e62da`. Extends phases 3-5 with phase 7 acceptance coverage. Production status has not been reverified during the 2026-10-27 catalog update.
 
 - Light/dark toggle on all pages, device-theme detection, and a saved browser preference. Shared neutral tokens adapt surfaces, text, controls, dialogs, and grid fades while preserving GDG accent tokens.
 - Mouse and pen dragging on the canvas update position sliders. Existing touch pan, pinch, and rotation remain.
@@ -114,6 +114,19 @@ Status: implemented locally, not pushed or deployed. Extends phases 3-5 with pha
 - `npm test` runs Chromium acceptance checks for theme detection and persistence, photo rendering and PNG download, mouse/pen/touch dragging, large-photo reload, storage fallbacks, upload validation, and keyboard/dialog behavior. Run `npx playwright install chromium` once if needed.
 
 Acceptance scope: local desktop and emulated mobile Chromium. Physical devices, Safari/Firefox, and production deployment are not verified by these checks. Phase 6 remains planned and phase 7 remains partial.
+
+### Catalog update: 2026-10-27
+
+- New first catalog entry: **Membership Application ’27**, slug `membership-2027`, frame ID `membership-2027-frame`.
+- Original overlay: `public/DP_Blast_mem.png`, supplied by the user, 2160 x 2160 transparent PNG. Preserve this artwork for canvas compositing. The existing export cap produces 2048 x 2048 PNG downloads.
+- Catalog cover and selector thumbnail: `public/DP_Blast_mem_thumbnail.png`, generated at 480 x 480 with transparency preserved, approximately 392 KB compared with the 3.19 MB overlay.
+- Caption preserves the provided prose, intentionally empty headings/phrases/credits, three repetitions of each supplied URL, and all five hashtags. Only `[Name]` is converted to the established `{{name}}` template contract. The user explicitly confirmed the blanks on 2026-10-27.
+- External application link: `https://forms.gle/6bwhYTCKF8wbymuKA`. The additional `https://surl.li/ywgejf` link is preserved in the caption. Destination contents have not been verified.
+- Homepage social preview follows the first catalog event through `/api/og/[eventSlug]`, so it now uses the membership artwork. Cosmos and SparkFest remain available with their existing captions and routes.
+- Focused browser coverage lives in `tests/membership.spec.ts`: discovery, name personalization, transparent preview/export, OG image, Clipboard API and fallback, intentional caption gaps, and mobile dark mode.
+- Validation on 2026-10-27: production build passed; all eight existing editor cases passed in the full browser run, and both membership cases passed in the focused rerun after the clipboard assertion accounted for Windows CRLF. Desktop light and mobile dark screenshots reviewed; `/api/test` returned HTTP 200. Safari, Firefox, physical devices, and production deployment were not verified.
+- Phase mapping: phase 2 catalog addition, using existing phases 3-5 flow with phase 7 validation. Phase 6 hardening and broader release work are unchanged.
+- Delivery status: committed locally; user push and deployment are pending.
 
 ## GDG Brand Direction (Frontend)
 

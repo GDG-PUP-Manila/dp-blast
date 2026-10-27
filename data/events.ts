@@ -20,6 +20,57 @@ export type EventItem = {
 
 export const events: EventItem[] = [
   {
+    id: "membership-2027",
+    slug: "membership-2027",
+    title: "Membership Application ’27",
+    description:
+      "Embark on a new cosmic adventure with Google Developer Groups on Campus PUP. Use the Membership Application ’27 frame to personalize your profile photo, then download your DP and copy the campaign caption.",
+    creator: "Google Developer Groups on Campus PUP",
+    // The empty headings, phrases, and credit names are intentional campaign copy.
+    captionTemplate: `   !
+
+After traversing a long, vast wormhole, we've finally emerged into a universe that feels unfamiliar, yet strangely familiar. Beyond this cosmic passage lies new horizons, filled with uncharted territories, endless discoveries, and boundless possibilities! ✨
+
+Hi, I'm {{name}}! ‍ Ready to embark on a new cosmic adventure at  ! With curiosity as my compass and the stars as my guide, I'm all set to , ,     !
+
+‧₊˚✩    ✩˚₊‧
+ https://forms.gle/6bwhYTCKF8wbymuKA
+ https://forms.gle/6bwhYTCKF8wbymuKA
+ https://forms.gle/6bwhYTCKF8wbymuKA ‎
+
+‧₊˚✩    ✩˚₊‧
+ https://surl.li/ywgejf
+ https://surl.li/ywgejf
+ https://surl.li/ywgejf
+
+‎‧₊˚✩     ! ✩˚₊‧
+
+
+
+
+  .    !
+
+ Layout by
+️ Assets by
+✍️ Spiel by
+
+#GDGPUP27
+#GoogleDevelopersGroups
+#GDGrowsBeyond
+#GDGInfoSession2026
+#LeapWithGDG`,
+    coverImagePath: "/DP_Blast_mem_thumbnail.png",
+    frames: [
+      {
+        id: "membership-2027-frame",
+        name: "Membership Application ’27 Frame",
+        overlayPath: "/DP_Blast_mem.png",
+        thumbnailPath: "/DP_Blast_mem_thumbnail.png",
+      },
+    ],
+    externalLink: "https://forms.gle/6bwhYTCKF8wbymuKA",
+  },
+  {
     id: "cosmos",
     slug: "cosmos",
     title: "Cosmos DP Blast",
