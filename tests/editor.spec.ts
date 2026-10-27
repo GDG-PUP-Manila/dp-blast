@@ -171,6 +171,18 @@ test('uploader prompts for the visitor name on first open and skips it once set'
   await expect(page.locator('#dpblast-name-modal')).toHaveCount(0);
 });
 
+test('stored Sparkmate placeholder is treated as unset so the prompt returns', async ({ page }) => {
+  await page.addInitScript(() => { try { localStorage.setItem('dpblast-user-name', 'Sparkmate'); } catch {} });
+  await page.goto('/events/cosmos');
+  await expect(page.locator('#dpblast-name-input')).toBeVisible();
+  // Continuing with an empty field must not persist the placeholder, so it re-prompts.
+  await page.getByRole('button', { name: 'Continue', exact: true }).click();
+  await expect(page.locator('#dpblast-name-modal')).toHaveCount(0);
+  expect(await page.evaluate(() => localStorage.getItem('dpblast-user-name'))).toBeNull();
+  await page.reload();
+  await expect(page.locator('#dpblast-name-input')).toBeVisible();
+});
+
 test('mobile layout and touch dragging still work in dark mode', async ({ browser }) => {
   const context = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, colorScheme: 'dark' });
   const page = await context.newPage();

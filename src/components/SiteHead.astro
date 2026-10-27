@@ -54,24 +54,33 @@ const imageUrl = new URL(imagePath, Astro.site ?? Astro.url).toString();
   (() => {
     const USER_NAME_KEY = 'dpblast-user-name';
     const MODAL_ID = 'dpblast-name-modal';
+    // Fallback used in captions. It is the absence of a real name, so it is
+    // never persisted and never counts as "named" (the prompt returns).
+    const DEFAULT_NAME = 'Sparkmate';
 
     const hasStoredName = () => {
       try {
         const existingName = localStorage.getItem(USER_NAME_KEY);
-        return Boolean(existingName && existingName.trim());
+        const trimmed = existingName && existingName.trim();
+        return Boolean(trimmed && trimmed !== DEFAULT_NAME);
       } catch {
         return false;
       }
     };
 
     const persistName = (value) => {
-      const normalizedName = value && value.trim() ? value.trim() : 'Sparkmate';
+      const trimmed = value && value.trim() ? value.trim() : '';
       try {
-        localStorage.setItem(USER_NAME_KEY, normalizedName);
+        if (trimmed && trimmed !== DEFAULT_NAME) {
+          localStorage.setItem(USER_NAME_KEY, trimmed);
+        } else {
+          // No real name given: clear any placeholder so the prompt returns next time.
+          localStorage.removeItem(USER_NAME_KEY);
+        }
       } catch {
         // Ignore storage issues and keep the UX flowing.
       }
-      return normalizedName;
+      return trimmed || DEFAULT_NAME;
     };
 
     const closeModal = (modal) => {
@@ -178,11 +187,11 @@ const imageUrl = new URL(imagePath, Astro.site ?? Astro.url).toString();
     window.dpblastEnsureName = (onReady) => {
       if (hasStoredName()) {
         if (typeof onReady === 'function') {
-          let existingName = 'Sparkmate';
+          let existingName = DEFAULT_NAME;
           try {
-            existingName = localStorage.getItem(USER_NAME_KEY)?.trim() || 'Sparkmate';
+            existingName = localStorage.getItem(USER_NAME_KEY)?.trim() || DEFAULT_NAME;
           } catch {
-            existingName = 'Sparkmate';
+            existingName = DEFAULT_NAME;
           }
           onReady(existingName);
         }
