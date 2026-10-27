@@ -2,7 +2,7 @@ import { test, expect, type Page } from '@playwright/test';
 import sharp from 'sharp';
 
 const eventPath = '/events/membership-2027';
-const framePath = '/DP_Blast_mem.png';
+const framePath = '/membership-2027.png';
 const photoColor = [239, 33, 69, 255];
 
 const uploadPhoto = async (page: Page) => {
@@ -36,7 +36,7 @@ const assertCaption = (caption: string, name: string) => {
 test('membership frame is discoverable and exports a personalized photo with a copyable caption', async ({ page, context }) => {
   const errors: string[] = [];
   page.on('pageerror', error => errors.push(error.message));
-  const source = sharp('public/DP_Blast_mem.png');
+  const source = sharp('public/membership-2027.png');
   const metadata = await source.metadata();
   expect([metadata.width, metadata.height, metadata.hasAlpha]).toEqual([2160, 2160, true]);
   const sourceCenter = await source.extract({ left: 1080, top: 1080, width: 1, height: 1 }).raw().toBuffer();
@@ -46,13 +46,13 @@ test('membership frame is discoverable and exports a personalized photo with a c
   await page.goto('/');
   const card = page.locator(`#events-section a[href="${eventPath}"]`);
   await expect(card).toBeVisible();
-  await expect(card.locator('img')).toHaveAttribute('src', '/DP_Blast_mem_thumbnail.png');
+  await expect(card.locator('img')).toHaveAttribute('src', '/membership-2027_thumbnail.png');
   await expect(page.locator('#events-section a').first()).toHaveAttribute('href', eventPath);
   await card.click();
   await page.locator('#dpblast-name-input').fill('Kian QA');
   await page.getByRole('button', { name: 'Continue', exact: true }).click();
   await expect(page).toHaveURL(eventPath);
-  await expect(page.locator('h1')).toContainText('Membership');
+  await expect(page.locator('main h1')).toContainText('Membership');
   await expect(page.locator('#frame-preview')).toHaveAttribute('src', framePath);
   const og = await page.request.get('/api/og/membership-2027');
   expect(og.ok()).toBe(true);

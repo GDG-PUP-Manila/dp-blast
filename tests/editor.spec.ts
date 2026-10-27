@@ -117,6 +117,7 @@ test('session fallback works when IndexedDB is unavailable', async ({ page }) =>
 
 test('storage failures preserve the editor photo and explain navigation failure', async ({ page }) => {
   await page.addInitScript(() => {
+    try { localStorage.setItem('dpblast-user-name', 'QA'); } catch {}
     indexedDB.open = () => { throw new Error('blocked'); };
     Storage.prototype.setItem = () => { throw new Error('quota'); };
   });
@@ -149,6 +150,7 @@ test('reduced motion name dialog remains visible, traps focus, Escape restores i
 });
 
 test('upload button is keyboard operable and invalid photos are rejected', async ({ page }) => {
+  await page.addInitScript(() => { try { localStorage.setItem('dpblast-user-name', 'QA'); } catch {} });
   await page.goto('/events/cosmos');
   await page.getByRole('button', { name: 'Choose Your Photo' }).focus();
   const chooser = page.waitForEvent('filechooser');
@@ -157,6 +159,16 @@ test('upload button is keyboard operable and invalid photos are rejected', async
   await expect(page.locator('#upload-status')).toContainText('Unsupported file type');
   await page.locator('#photo').setInputFiles({ name: 'big.png', mimeType: 'image/png', buffer: Buffer.alloc(10 * 1024 * 1024 + 1) });
   await expect(page.locator('#upload-status')).toContainText('too large');
+});
+
+test('uploader prompts for the visitor name on first open and skips it once set', async ({ page }) => {
+  await page.goto('/events/cosmos');
+  await expect(page.locator('#dpblast-name-input')).toBeVisible();
+  await page.locator('#dpblast-name-input').fill('Kian QA');
+  await page.getByRole('button', { name: 'Continue', exact: true }).click();
+  await expect(page.locator('#dpblast-name-modal')).toHaveCount(0);
+  await page.reload();
+  await expect(page.locator('#dpblast-name-modal')).toHaveCount(0);
 });
 
 test('mobile layout and touch dragging still work in dark mode', async ({ browser }) => {

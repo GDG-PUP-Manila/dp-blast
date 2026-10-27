@@ -186,6 +186,11 @@ const pageDescription = `Upload your photo and apply ${event.title} frames in DP
         });
       });
 
+      // Prompt for the visitor's name when the uploader opens, unless it is already set.
+      if (typeof window.dpblastEnsureName === 'function') {
+        window.dpblastEnsureName();
+      }
+
       if (photoInput instanceof HTMLInputElement) {
         photoInput.addEventListener('change', async () => {
           const file = photoInput.files?.[0];

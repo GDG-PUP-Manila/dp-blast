@@ -58,13 +58,13 @@ Hi, I'm {{name}}! 🧑‍🚀 Ready to embark on a new cosmic adventure at 𝗚�
 #GDGrowsBeyond
 #GDGInfoSession2026
 #LeapWithGDG`,
-    coverImagePath: "/DP_Blast_mem_thumbnail.png",
+    coverImagePath: "/membership-2027_thumbnail.png",
     frames: [
       {
         id: "membership-2027-frame",
         name: "Membership Application ’27 Frame",
-        overlayPath: "/DP_Blast_mem.png",
-        thumbnailPath: "/DP_Blast_mem_thumbnail.png",
+        overlayPath: "/membership-2027.png",
+        thumbnailPath: "/membership-2027_thumbnail.png",
       },
     ],
     externalLink: "https://forms.gle/6bwhYTCKF8wbymuKA",

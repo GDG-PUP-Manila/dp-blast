@@ -118,8 +118,8 @@ Acceptance scope: local desktop and emulated mobile Chromium. Physical devices, 
 ### Catalog update: 2026-10-27
 
 - New first catalog entry: **Membership Application ’27**, slug `membership-2027`, frame ID `membership-2027-frame`.
-- Original overlay: `public/DP_Blast_mem.png`, supplied by the user, 2160 x 2160 transparent PNG. Preserve this artwork for canvas compositing. The existing export cap produces 2048 x 2048 PNG downloads.
-- Catalog cover and selector thumbnail: `public/DP_Blast_mem_thumbnail.png`, generated at 480 x 480 with transparency preserved, approximately 392 KB compared with the 3.19 MB overlay.
+- Overlay: `public/membership-2027.png`, supplied by the user, 2160 x 2160 transparent PNG (artwork replaced on 2026-10-27; files renamed from the earlier `DP_Blast_mem` name). Preserve this artwork for canvas compositing. The existing export cap produces 2048 x 2048 PNG downloads.
+- Catalog cover and selector thumbnail: `public/membership-2027_thumbnail.png`, generated at 480 x 480 with transparency preserved.
 - Caption preserves the provided prose, intentionally empty headings/phrases/credits, three repetitions of each supplied URL, and all five hashtags. Only `[Name]` is converted to the established `{{name}}` template contract. The user explicitly confirmed the blanks on 2026-10-27.
 - External application link: `https://forms.gle/6bwhYTCKF8wbymuKA`. The additional `https://surl.li/ywgejf` link is preserved in the caption. Destination contents have not been verified.
 - Homepage social preview follows the first catalog event through `/api/og/[eventSlug]`, so it now uses the membership artwork. Cosmos and SparkFest remain available with their existing captions and routes.

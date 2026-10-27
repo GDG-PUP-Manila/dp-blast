@@ -20,4 +20,4 @@ Core upload -> customize -> download loop is shipped. Prefer operate/harden over
 
 Editor update (2026-10-17): theme preferences, IndexedDB photo handoff, desktop dragging, and keyboard/dialog fixes committed as `82e62da` with Chromium acceptance coverage. Site maintainer credit is Kian Angelo M. Florendo.
 
-Local catalog update (2026-10-27): Membership Application ’27 added at `/events/membership-2027`, using the provided `DP_Blast_mem.png` and caption. Caption gaps and empty credit names are intentional per the user. This catalog update is committed locally; user push and deployment are pending.
+Local catalog update (2026-10-27): Membership Application ’27 added at `/events/membership-2027`, using the provided frame art (`public/membership-2027.png`, renamed from `DP_Blast_mem.png`) and caption. Caption styled Unicode was restored and the name modal now uses a single Continue button plus an uploader-page name prompt. This catalog update is committed locally; user push and deployment are pending.
