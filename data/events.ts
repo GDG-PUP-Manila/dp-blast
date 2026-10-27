@@ -26,33 +26,32 @@ export const events: EventItem[] = [
     description:
       "Embark on a new cosmic adventure with Google Developer Groups on Campus PUP. Use the Membership Application ’27 frame to personalize your profile photo, then download your DP and copy the campaign caption.",
     creator: "Google Developer Groups on Campus PUP",
-    // The empty headings, phrases, and credit names are intentional campaign copy.
-    captionTemplate: `   !
+    captionTemplate: `𝙏𝙃𝙀 𝙀𝙓𝙋𝙀𝘿𝙄𝙏𝙄𝙊𝙉 𝙎𝙏𝘼𝙍𝙏𝙎 𝙉𝙊𝙒! 🛸
 
 After traversing a long, vast wormhole, we've finally emerged into a universe that feels unfamiliar, yet strangely familiar. Beyond this cosmic passage lies new horizons, filled with uncharted territories, endless discoveries, and boundless possibilities! ✨
 
-Hi, I'm {{name}}! ‍ Ready to embark on a new cosmic adventure at  ! With curiosity as my compass and the stars as my guide, I'm all set to , ,     !
+Hi, I'm {{name}}! 🧑‍🚀 Ready to embark on a new cosmic adventure at 𝗚𝗗𝗚 𝗣𝗨𝗣! With curiosity as my compass and the stars as my guide, I'm all set to 𝗴𝗿𝗼𝘄, 𝗰𝗼𝗻𝗻𝗲𝗰𝘁, 𝗮𝗻𝗱 𝗲𝘅𝗽𝗹𝗼𝗿𝗲 𝗯𝗲𝘆𝗼𝗻𝗱 𝘁𝗵𝗲 𝗴𝗮𝗹𝗮𝘅𝗶𝗲𝘀! 🌠
 
-‧₊˚✩    ✩˚₊‧
- https://forms.gle/6bwhYTCKF8wbymuKA
- https://forms.gle/6bwhYTCKF8wbymuKA
- https://forms.gle/6bwhYTCKF8wbymuKA ‎
+‧₊˚✩ 𝗠𝗘𝗠𝗕𝗘𝗥𝗦𝗛𝗜𝗣 𝗔𝗣𝗣𝗟𝗜𝗖𝗔𝗧𝗜𝗢𝗡 𝗟𝗜𝗡𝗞 ✩˚₊‧
+🔗 https://forms.gle/6bwhYTCKF8wbymuKA
+🔗 https://forms.gle/6bwhYTCKF8wbymuKA
+🔗 https://forms.gle/6bwhYTCKF8wbymuKA
 
-‧₊˚✩    ✩˚₊‧
- https://surl.li/ywgejf
- https://surl.li/ywgejf
- https://surl.li/ywgejf
+‧₊˚✩ 𝗠𝗘𝗠𝗕𝗘𝗥𝗦𝗛𝗜𝗣 𝗣𝗥𝗜𝗠𝗘𝗥 𝗟𝗜𝗡𝗞 ✩˚₊‧
+🔗 https://surl.li/ywgejf
+🔗 https://surl.li/ywgejf
+🔗 https://surl.li/ywgejf
 
-‎‧₊˚✩     ! ✩˚₊‧
+‧₊˚✩ 𝗝𝗼𝗶𝗻 𝘁𝗵𝗲 𝗗𝗣 𝗕𝗹𝗮𝘀𝘁 𝗡𝗢𝗪! ✩˚₊‧
+🔗 frame.gdgpup.org
+🔗 frame.gdgpup.org
+🔗 frame.gdgpup.org
 
+𝗡𝗲𝘄 𝗳𝗿𝗼𝗻𝘁𝗶𝗲𝗿𝘀 𝗮𝘄𝗮𝗶𝘁. 𝗟𝗲𝘁 𝘁𝗵𝗲 𝗲𝘅𝗽𝗲𝗱𝗶𝘁𝗶𝗼𝗻 𝗯𝗲𝗴𝗶𝗻! 🚀
 
-
-
-  .    !
-
- Layout by
-️ Assets by
-✍️ Spiel by
+🎨 Layout by 𝘝𝘪𝘯𝘤𝘦 𝘋𝘦𝘭𝘪𝘨𝘦𝘯𝘵𝘦
+🖌️ Assets by 𝘒𝘦𝘯𝘯𝘦𝘵𝘩 𝘔𝘢𝘳𝘲𝘶𝘦𝘻
+✍️ Spiel by 𝘛𝘰𝘮𝘮𝘺 𝘙𝘦𝘵𝘶𝘭𝘪𝘯
 
 #GDGPUP27
 #GoogleDevelopersGroups
